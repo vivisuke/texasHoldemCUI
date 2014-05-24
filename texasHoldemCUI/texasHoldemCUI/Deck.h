@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <random>
 
 //----------------------------------------------------------------------
 //	１枚のカードを表す構造体（ジョーカーは除く）
@@ -49,7 +50,7 @@ public:
 class Deck
 {
 public:
-	Deck(bool shfl = true) { init(shfl); }
+	Deck(bool shfl = true);
 	~Deck() {}
 
 public:
@@ -68,4 +69,5 @@ public:
 private:
 	int	m_nDealt;				//	既に配られた枚数（m_card の最初の m_nDealt 枚が配られている）
 	Card	m_card[Card::N_CARD];		//	カード配列
+	std::mt19937	m_mt;
 };
