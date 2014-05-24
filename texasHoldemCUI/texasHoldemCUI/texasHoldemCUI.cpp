@@ -60,13 +60,8 @@ void draw_human()
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(MAN_X, MAN_Y+1);
 	cout << "chip:" << g_table.chip(g_manIX);
-	setCursorPos(MAN_X, MAN_Y+2);
-	Card c1, c2;
-	g_table.getHoleCards(0, c1, c2);
-	coutW(c1.toStringW());
-	cout << " ";
-	coutW(c2.toStringW());
-	//cout << "?? ??";
+	setCursorPos(MAN_BET_X, MAN_BET_Y);
+	cout << "bet:" << g_table.bet(g_manIX) << "      ";
 	if( g_manIX == g_table.dealerIX() ) {
 		setCursorPos(MAN_X - 2, MAN_Y);
 		cout << "D";
@@ -79,8 +74,22 @@ void draw_human()
 		setCursorPos(MAN_X - 3, MAN_Y + 1);
 		cout << "SB";
 	}
-	setCursorPos(MAN_BET_X, MAN_BET_Y);
-	cout << "bet:" << g_table.bet(g_manIX) << "      ";
+	Card c1, c2;
+	g_table.getHoleCards(0, c1, c2);
+	if( c1.m_suit == Card::SPADES || c1.m_suit == Card::CLUBS )
+		setColor(COL_BLACK, COL_WHITE);
+	else
+		setColor(COL_RED, COL_WHITE);
+	setCursorPos(MAN_X, MAN_Y+2);
+	coutW(c1.toStringW());
+	//cout << " ";
+	if( c2.m_suit == Card::SPADES || c2.m_suit == Card::CLUBS )
+		setColor(COL_BLACK, COL_WHITE);
+	else
+		setColor(COL_RED, COL_WHITE);
+	setCursorPos(MAN_X+3, MAN_Y+2);
+	coutW(c2.toStringW());
+	//cout << "?? ??";
 }
 void draw_table()
 {
@@ -129,4 +138,5 @@ int main()
 ◎ pot 表示
 ◎ 各プレイヤーのベット額表示
 ◎ 乱数生成器を mt19937 に変更
+◎ カード表示：白背景に黒 or 赤で描画
 */

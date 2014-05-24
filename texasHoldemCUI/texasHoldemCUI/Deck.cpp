@@ -15,7 +15,7 @@ std::wstring Card::toStringW() const
 {
 	if( m_suit < 0 || m_suit >= N_SUIT || m_rank < 0 || m_rank >= N_RANK )
 		return std::wstring(L"??");
-	std::wstring str(1, L"♠♣♡♢"[m_suit]);
+	std::wstring str(1, L"♠♣♥♦"[m_suit]);
 	str += L"23456789TJQKA"[m_rank];
 	return str;
 }
