@@ -28,7 +28,7 @@ void draw_com()
 	cout << " COMPUTER  ";
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(COM_X, COM_Y+1);
-	cout << "chip:200";
+	cout << "chip:" << g_table.chip(g_comIX);
 	setCursorPos(COM_X, COM_Y+2);
 	cout << "?? ??";
 	if( g_comIX == g_table.dealerIX() ) {
@@ -51,7 +51,7 @@ void draw_human()
 	cout << "  HUMAN   ";
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(MAN_X, MAN_Y+1);
-	cout << "chip:200";
+	cout << "chip:" << g_table.chip(g_manIX);
 	setCursorPos(MAN_X, MAN_Y+2);
 	Card c1, c2;
 	g_table.getHoleCards(0, c1, c2);
@@ -111,4 +111,5 @@ int main()
 ◎ テーブル幅を最大コミュニティカード数に合わせる
 ◎ ディーラマーク表示
 ◎ BB, SB マーク表示
+● チップを正しく表示
 */

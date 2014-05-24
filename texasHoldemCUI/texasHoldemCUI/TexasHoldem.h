@@ -46,6 +46,7 @@ public:
 	int	dealerIX() const { return m_dealerIX; }
 	int	SBIX() const;
 	int	BBIX() const;
+	int	chip(int ix) const { return m_player[ix].m_chip; }
 
 public:
 	void	initialize();					//	ƒe[ƒuƒ‹‚Ì‰Šú‰»
