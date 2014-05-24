@@ -16,6 +16,8 @@ using namespace std;
 #define		MAN_Y			(TABLE_Y+TABLE_HT+1)
 #define		MENU_X		2
 #define		MENU_Y		(MAN_Y+PLAYER_HT+1)
+#define		POT_X			(TABLE_X + TABLE_WD + 1)
+#define		POT_Y			(TABLE_Y + 1)
 
 TexasHoldem g_table;
 int	g_comIX;
@@ -82,6 +84,10 @@ void draw_table()
 	}
 	setCursorPos(TABLE_X + 2, TABLE_Y + 1);
 	cout << "?? ?? ?? ?? ??";
+	
+	setColor(COL_GRAY, COL_BLACK);
+	setCursorPos(POT_X, POT_Y);
+	cout << "Pot:" << g_table.pot() << "        ";
 }
 void draw_menu()
 {
@@ -111,5 +117,7 @@ int main()
 ◎ テーブル幅を最大コミュニティカード数に合わせる
 ◎ ディーラマーク表示
 ◎ BB, SB マーク表示
-● チップを正しく表示
+◎ チップを正しく表示
+◎ pot 表示
+● 各プレイヤーのベット額表示
 */

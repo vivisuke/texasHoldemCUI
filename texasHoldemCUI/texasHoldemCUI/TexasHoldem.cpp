@@ -282,6 +282,11 @@ int TexasHoldem::BBIX() const
 		ix -= m_nPlayer;
 	return ix;
 }
+int TexasHoldem::bet(int ix) const
+{
+	const std::vector<int> &b = m_bets[ix];
+	return std::accumulate(b.begin(), b.end(), 0);
+}
 //	プレイヤーのチップのみ表示
 void TexasHoldem::printPlayerChips() const
 {

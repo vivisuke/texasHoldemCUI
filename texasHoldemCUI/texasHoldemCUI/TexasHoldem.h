@@ -47,6 +47,8 @@ public:
 	int	SBIX() const;
 	int	BBIX() const;
 	int	chip(int ix) const { return m_player[ix].m_chip; }
+	int	bet(int ix) const;
+	int	pot() const { return m_pot; }
 
 public:
 	void	initialize();					//	ƒe[ƒuƒ‹‚Ì‰Šú‰»
