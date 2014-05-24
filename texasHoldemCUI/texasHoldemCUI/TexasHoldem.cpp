@@ -268,6 +268,20 @@ int TexasHoldem::addPlayer(const Player &p)
 	//m_holeCards.resize(m_nPlayer);
 	return ix;
 }
+int TexasHoldem::SBIX() const
+{
+	int ix = m_dealerIX + 1;
+	if( ix >= m_nPlayer )
+		ix -= m_nPlayer;
+	return ix;
+}
+int TexasHoldem::BBIX() const
+{
+	int ix = SBIX() + 1;
+	if( ix >= m_nPlayer )
+		ix -= m_nPlayer;
+	return ix;
+}
 //	プレイヤーのチップのみ表示
 void TexasHoldem::printPlayerChips() const
 {

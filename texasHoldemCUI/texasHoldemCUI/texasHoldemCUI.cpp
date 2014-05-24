@@ -35,6 +35,14 @@ void draw_com()
 		setCursorPos(COM_X - 2, COM_Y);
 		cout << "D";
 	}
+	if( g_comIX == g_table.BBIX() ) {
+		setCursorPos(COM_X - 3, COM_Y + 1);
+		cout << "BB";
+	}
+	if( g_comIX == g_table.SBIX() ) {
+		setCursorPos(COM_X - 3, COM_Y + 1);
+		cout << "SB";
+	}
 }
 void draw_human()
 {
@@ -54,6 +62,14 @@ void draw_human()
 	if( g_manIX == g_table.dealerIX() ) {
 		setCursorPos(MAN_X - 2, MAN_Y);
 		cout << "D";
+	}
+	if( g_manIX == g_table.BBIX() ) {
+		setCursorPos(MAN_X - 3, MAN_Y + 1);
+		cout << "BB";
+	}
+	if( g_manIX == g_table.SBIX() ) {
+		setCursorPos(MAN_X - 3, MAN_Y + 1);
+		cout << "SB";
 	}
 }
 void draw_table()
@@ -94,5 +110,5 @@ int main()
 /*
 ◎ テーブル幅を最大コミュニティカード数に合わせる
 ◎ ディーラマーク表示
-● BB, SB マーク表示
+◎ BB, SB マーク表示
 */

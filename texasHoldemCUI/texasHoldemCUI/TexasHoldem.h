@@ -44,6 +44,8 @@ public:
 	void	printPlayerChips() const;		//	プレイヤーのチップのみ表示
 	void	printProb() const;
 	int	dealerIX() const { return m_dealerIX; }
+	int	SBIX() const;
+	int	BBIX() const;
 
 public:
 	void	initialize();					//	テーブルの初期化
