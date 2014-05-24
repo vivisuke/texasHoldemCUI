@@ -12,8 +12,12 @@ using namespace std;
 #define		PLAYER_WD	(1+8+1)		//	" COMPUTER ", "  HUMAN   "
 #define		COM_X			(TABLE_X + (TABLE_WD - PLAYER_WD) / 2)
 #define		COM_Y			2
+#define		COM_BET_X	(COM_X + PLAYER_WD + 1)
+#define		COM_BET_Y	(COM_Y + 1)
 #define		MAN_X			COM_X
 #define		MAN_Y			(TABLE_Y+TABLE_HT+1)
+#define		MAN_BET_X	(MAN_X + PLAYER_WD + 1)
+#define		MAN_BET_Y	(MAN_Y + 1)
 #define		MENU_X		2
 #define		MENU_Y		(MAN_Y+PLAYER_HT+1)
 #define		POT_X			(TABLE_X + TABLE_WD + 1)
@@ -27,7 +31,7 @@ void draw_com()
 {
 	setCursorPos(COM_X, COM_Y);
 	setColor(COL_BLACK, COL_YELLOW);
-	cout << " COMPUTER  ";
+	cout << " COMPUTER ";
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(COM_X, COM_Y+1);
 	cout << "chip:" << g_table.chip(g_comIX);
@@ -45,6 +49,8 @@ void draw_com()
 		setCursorPos(COM_X - 3, COM_Y + 1);
 		cout << "SB";
 	}
+	setCursorPos(COM_BET_X, COM_BET_Y);
+	cout << "bet:" << g_table.bet(g_comIX) << "      ";
 }
 void draw_human()
 {
@@ -73,6 +79,8 @@ void draw_human()
 		setCursorPos(MAN_X - 3, MAN_Y + 1);
 		cout << "SB";
 	}
+	setCursorPos(MAN_BET_X, MAN_BET_Y);
+	cout << "bet:" << g_table.bet(g_manIX) << "      ";
 }
 void draw_table()
 {
@@ -119,5 +127,5 @@ int main()
 ◎ BB, SB マーク表示
 ◎ チップを正しく表示
 ◎ pot 表示
-● 各プレイヤーのベット額表示
+◎ 各プレイヤーのベット額表示
 */
