@@ -43,6 +43,7 @@ public:
 	void	print(const char * = 0) const;
 	void	printPlayerChips() const;		//	プレイヤーのチップのみ表示
 	void	printProb() const;
+	int	dealerIX() const { return m_dealerIX; }
 
 public:
 	void	initialize();					//	テーブルの初期化
