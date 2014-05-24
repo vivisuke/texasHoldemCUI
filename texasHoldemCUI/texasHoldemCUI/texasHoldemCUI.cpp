@@ -27,6 +27,11 @@ TexasHoldem g_table;
 int	g_comIX;
 int	g_manIX;
 
+void draw_card(int x, int y, Card c)
+{
+	setCursorPos(x, y);
+}
+
 void draw_com()
 {
 	setCursorPos(COM_X, COM_Y);
@@ -35,8 +40,6 @@ void draw_com()
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(COM_X, COM_Y+1);
 	cout << "chip:" << g_table.chip(g_comIX);
-	setCursorPos(COM_X, COM_Y+2);
-	cout << "?? ??";
 	if( g_comIX == g_table.dealerIX() ) {
 		setCursorPos(COM_X - 2, COM_Y);
 		cout << "D";
@@ -51,6 +54,11 @@ void draw_com()
 	}
 	setCursorPos(COM_BET_X, COM_BET_Y);
 	cout << "bet:" << g_table.bet(g_comIX) << "      ";
+	setColor(COL_BLACK, COL_CYAN);
+	setCursorPos(COM_X, COM_Y+2);
+	cout << "  ";
+	setCursorPos(COM_X+3, COM_Y+2);
+	cout << "  ";
 }
 void draw_human()
 {
@@ -139,4 +147,5 @@ int main()
 ◎ 各プレイヤーのベット額表示
 ◎ 乱数生成器を mt19937 に変更
 ◎ カード表示：白背景に黒 or 赤で描画
+◎ 伏せているカードはシアンで表示
 */
