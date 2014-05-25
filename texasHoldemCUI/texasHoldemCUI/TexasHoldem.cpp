@@ -82,6 +82,15 @@ void TexasHoldem::dealRiver()				//	コミュニティカード5枚目を配る
 {
 	m_communityCards.push_back(m_deck.deal());
 }
+void TexasHoldem::playersCard(int ix, std::vector<Card> &v)
+{
+	v.clear();
+	v.push_back(m_holeCards[ix].first);
+	v.push_back(m_holeCards[ix].second);
+	for (int i = 0; i < (int)m_communityCards.size(); ++i) {
+		v.push_back(m_communityCards[i]);
+	}
+}
 void TexasHoldem::showDown()				//	手札を晒し、勝敗を決め、チップを精算
 {
 	std::cout << "\n";

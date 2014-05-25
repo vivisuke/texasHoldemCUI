@@ -60,6 +60,7 @@ public:
 	int	pot() const { return m_pot; }
 	bool	allCalled() const;
 	const std::vector<Card>	&communityCards() const { return m_communityCards; }
+	void	playersCard(int ix, std::vector<Card> &);
 
 public:
 	void	initialize();					//	ƒe[ƒuƒ‹‚Ì‰Šú‰»

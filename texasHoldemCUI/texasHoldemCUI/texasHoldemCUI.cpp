@@ -1,6 +1,7 @@
 #include "consoleUtil.h"
 #include "Deck.h"
 #include "TexasHoldem.h"
+#include "poker.h"
 #include <windows.h>
 #include <conio.h>
 
@@ -55,7 +56,8 @@ void draw_card(int x, int y, Card c)
 	coutW(c.toStringW());
 }
 
-void draw_com()
+void draw_com(bool open = false);
+void draw_com(bool open)
 {
 	setCursorPos(COM_X, COM_Y);
 	setColor(COL_BLACK, COL_YELLOW);
@@ -77,11 +79,18 @@ void draw_com()
 	}
 	setCursorPos(COM_BET_X, COM_BET_Y);
 	cout << "bet:" << g_table.bet(g_comIX) << "      ";
-	setColor(COL_BLACK, COL_CYAN);
-	setCursorPos(COM_X, COM_Y+2);
-	cout << "  ";
-	setCursorPos(COM_X+3, COM_Y+2);
-	cout << "  ";
+	if( open ) {
+		Card c1, c2;
+		g_table.getHoleCards(g_comIX, c1, c2);
+		draw_card(COM_X, COM_Y+2, c1);
+		draw_card(COM_X+3, COM_Y+2, c2);
+	} else {
+		setColor(COL_BLACK, COL_CYAN);
+		setCursorPos(COM_X, COM_Y+2);
+		cout << "  ";
+		setCursorPos(COM_X+3, COM_Y+2);
+		cout << "  ";
+	}
 }
 void draw_human()
 {
@@ -106,7 +115,7 @@ void draw_human()
 		cout << "SB";
 	}
 	Card c1, c2;
-	g_table.getHoleCards(0, c1, c2);
+	g_table.getHoleCards(g_manIX, c1, c2);
 	if( c1.m_suit == Card::SPADES || c1.m_suit == Card::CLUBS )
 		setColor(COL_BLACK, COL_WHITE);
 	else
@@ -243,7 +252,14 @@ int main()
 				}
 			}
 		}
+		draw_com(/*open:*/true);
 		//	精算処理
+		uint odr0, odr1;
+		std::vector<Card> v;
+		g_table.playersCard(0, v);
+		checkHand(v, odr0);
+		g_table.playersCard(1, v);
+		checkHand(v, odr1);
 	}
 	//getchar();
 	return 0;
@@ -264,4 +280,9 @@ int main()
 ◎ コールが揃ったら、次のターンに進む
 ◎ コミュニティカードを正しく表示
 ◎ 問題：コール時に持ちチップが減っていない
+◎ 問題：精算時にコンピュータの手札がオープンされない
+● １ゲーム終了後の精算処理
+● フォールド処理
+● 上下キーでレイズ額を設定可能に
+● [AllIn] メニュー追加
 */
