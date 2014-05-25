@@ -27,7 +27,13 @@ public:
 typedef std::pair<Card, Card> HoleCards;
 class TexasHoldem
 {
+public:
 	enum {
+		PRE_FLOP = 0,
+		FLOP,
+		TURN,
+		RIVER,
+		
 		UNKNOWN = 0,
 		FOLD,
 		CHECKED,
@@ -44,6 +50,7 @@ public:
 	void	printPlayerChips() const;		//	プレイヤーのチップのみ表示
 	void	printProb() const;
 	int	nPlayer() const { return m_nPlayer; }
+	int	turn() const { return m_turn; }		//	ターン、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
 	int	dealerIX() const { return m_dealerIX; }
 	int	SBIX() const;
 	int	BBIX() const;
@@ -51,6 +58,7 @@ public:
 	int	chip(int ix) const { return m_player[ix].m_chip; }
 	int	bet(int ix) const;
 	int	pot() const { return m_pot; }
+	bool	allCalled() const;
 
 public:
 	void	initialize();					//	テーブルの初期化

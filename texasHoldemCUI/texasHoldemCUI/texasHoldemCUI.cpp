@@ -147,18 +147,14 @@ void draw_menu()
 	//setColor(COL_GRAY, COL_BLACK);
 	//cout << "[Fold] [Check] [Call] [Raise] 0";
 }
-int main()
+//	プリフロップ、フロップ、ターン、リバーの処理
+//	全員コール：return true;
+//	一人以外全員降りたら：return false;
+bool turn()
 {
-	g_table.addPlayer(Player("YOU", 200));
-	g_manIX = 0;
-	g_table.addPlayer(Player("COM", 200, /*comp:*/true));
-	g_comIX = 1;
-	g_table.setDealer();
-	g_table.dealHoleCards();
-	setColor(COL_BLACK, COL_WHITE);
-	setCursorPos(5, 0);
-	cout << "*** Texas Hold'em Poker ***";
-	int pix = g_table.dealerIX() + 3;		//	現在の手番
+	int pix = g_table.dealerIX() + 1;		//	現在の手番
+	if( g_table.turn() == TexasHoldem::PRE_FLOP )
+		pix += 2;
 	for (;;) {
 		draw_com();
 		draw_human();
@@ -209,7 +205,36 @@ int main()
 				break;
 			}
 		}
+		if( g_table.allCalled() )
+			return true;
 		++pix;
+	}
+}
+int main()
+{
+	g_table.addPlayer(Player("YOU", 200));
+	g_manIX = 0;
+	g_table.addPlayer(Player("COM", 200, /*comp:*/true));
+	g_comIX = 1;
+	g_table.setDealer();
+	g_table.dealHoleCards();
+	setColor(COL_BLACK, COL_WHITE);
+	setCursorPos(5, 0);
+	cout << "*** Texas Hold'em Poker ***";
+	for (;;) {
+		if( turn() ) {
+			//	まだ２人以上残っている場合
+			g_table.dealFlop();
+			if( turn() ) {
+				//	まだ２人以上残っている場合
+				g_table.dealTurn();
+				if( turn() ) {
+					//	まだ２人以上残っている場合
+					g_table.dealTurn();
+					turn();
+				}
+			}
+		}
 	}
 	//getchar();
 	return 0;
@@ -227,4 +252,6 @@ int main()
 ◎ メニューをデータ化
 ◎ 左右キーでメニュー選択可能に
 ◎ とりあえず Check/Call で先に進めるようにする
+◎ コールが揃ったら、次のターンに進む
+● コミュニティカードを正しく表示
 */

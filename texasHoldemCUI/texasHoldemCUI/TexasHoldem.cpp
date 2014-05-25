@@ -361,3 +361,11 @@ void TexasHoldem::setBet(int ix, int b)		//	ベット/コールを行う
 	m_bets[ix].push_back(b);
 	m_pot += b;
 }
+bool TexasHoldem::allCalled() const
+{
+	for (int i = 0; i < m_nPlayer; ++i) {
+		if( bet(i) != m_call )
+			return false;
+	}
+	return true;
+}
