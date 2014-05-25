@@ -43,9 +43,11 @@ public:
 	void	print(const char * = 0) const;
 	void	printPlayerChips() const;		//	プレイヤーのチップのみ表示
 	void	printProb() const;
+	int	nPlayer() const { return m_nPlayer; }
 	int	dealerIX() const { return m_dealerIX; }
 	int	SBIX() const;
 	int	BBIX() const;
+	int	call() const { return m_call; }		//	コールするのに必要なトータルチップ額
 	int	chip(int ix) const { return m_player[ix].m_chip; }
 	int	bet(int ix) const;
 	int	pot() const { return m_pot; }
@@ -63,6 +65,7 @@ public:
 	void	game();						//	1ゲームの処理
 	void	forwardDealer();			//	デーラーをひとつ進める
 	int	action(int);					//	AI
+	void	setBet(int ix, int b);		//	ベット/コールを行う
 	
 private:
 	Deck	m_deck;			//	デッキ（一組のカード）

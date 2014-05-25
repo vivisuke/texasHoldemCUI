@@ -25,8 +25,15 @@ using namespace std;
 #define		MENU_X		2
 #define		MENU_Y		(MAN_Y+PLAYER_HT+1)
 #define		N_MENU		3		//	メニュー選択肢数
+#define		MENU_FOLD	0
+#define		MENU_CC		1		//	Check/Call
+#define		MENU_RAISE	2
+#define		KEY_SPECIAL	0xe0
 #define		KEY_LEFT		0x4b
 #define		KEY_RIGHT	0x4d
+#define		ACT_FOLD		1
+#define		ACT_CC			2		//	Check/Call
+#define		ACT_RAISE	3
 
 
 TexasHoldem g_table;
@@ -35,7 +42,7 @@ int	g_manIX;
 
 int	g_menuIX;			//	選択されているメニューIX
 const char *g_menu[] = {
-	"FOLD", "CHECK/CALL", "RAISE"
+	"Fold", "Check/Call", "Raise"
 };
 
 void draw_card(int x, int y, Card c)
@@ -151,24 +158,58 @@ int main()
 	setColor(COL_BLACK, COL_WHITE);
 	setCursorPos(5, 0);
 	cout << "*** Texas Hold'em Poker ***";
-	draw_com();
-	draw_human();
-	draw_table();
+	int pix = g_table.dealerIX() + 3;		//	現在の手番
 	for (;;) {
-		draw_menu();
-		int ch = _getch();
-		if( ch == 'Q' || ch == 'q' )
-			break;
-		if( ch == 0xe0 ) {
-			ch = _getch();
-			if( ch == KEY_LEFT && g_menuIX != 0 )
-				--g_menuIX;
-			else if( ch == KEY_RIGHT && g_menuIX < N_MENU - 1)
-				++g_menuIX;
+		draw_com();
+		draw_human();
+		draw_table();
+		int act = 0;
+		while( pix >= g_table.nPlayer() )
+			pix -= g_table.nPlayer();
+		if( pix == g_manIX ) {
+			g_menuIX = MENU_CC;		//	Check/Call
+			for (;;) {
+				draw_menu();
+				int ch = _getch();
+				if( ch == 'Q' || ch == 'q' )
+					return 0;
+				if( ch == KEY_SPECIAL ) {		//	矢印キーなどの場合
+					ch = _getch();
+					if( ch == KEY_LEFT && g_menuIX != 0 )
+						--g_menuIX;
+					else if( ch == KEY_RIGHT && g_menuIX < N_MENU - 1)
+						++g_menuIX;
+				}
+				if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
+					break;
+				}
+			}
+			switch( g_menuIX ) {
+				case MENU_FOLD:
+					act = ACT_FOLD;
+					break;
+				case MENU_CC: {
+					act = ACT_CC;
+					break;
+				}
+				case MENU_RAISE:
+					act = ACT_RAISE;
+					break;
+			}
+		} else {
+			Sleep(500);
+			act = ACT_CC;
 		}
-		if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
-			break;
+		switch( act ) {
+			case ACT_CC: {
+				int b = g_table.call() - g_table.bet(pix);
+				if( b != 0 ) {
+					g_table.setBet(pix, b);
+				}
+				break;
+			}
 		}
+		++pix;
 	}
 	//getchar();
 	return 0;
@@ -185,4 +226,5 @@ int main()
 ◎ 伏せているカードはシアンで表示
 ◎ メニューをデータ化
 ◎ 左右キーでメニュー選択可能に
+◎ とりあえず Check/Call で先に進めるようにする
 */
