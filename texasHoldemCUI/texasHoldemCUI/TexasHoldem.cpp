@@ -95,6 +95,7 @@ void TexasHoldem::winner(int ix)			//	ix が買った場合の処理
 {
 	m_player[ix].m_chip += m_pot;
 	m_pot = 0;
+	//m_bets.clear();
 }
 void TexasHoldem::split(const std::vector<int> &v)		//	引き分けだった場合の処理
 {
@@ -103,6 +104,7 @@ void TexasHoldem::split(const std::vector<int> &v)		//	引き分けだった場合の処理
 		m_player[i].m_chip = m_pot/v.size();
 	}
 	m_pot = 0;
+	//m_bets.clear();
 }
 void TexasHoldem::showDown()				//	手札を晒し、勝敗を決め、チップを精算
 {

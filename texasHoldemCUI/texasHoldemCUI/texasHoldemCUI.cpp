@@ -4,6 +4,7 @@
 #include "poker.h"
 #include <windows.h>
 #include <conio.h>
+#include <algorithm>    // std::find
 
 using namespace std;
 
@@ -94,7 +95,10 @@ void draw_com(bool open)
 		cout << "SB";
 	}
 	setCursorPos(COM_BET_X, COM_BET_Y);
-	cout << "bet:" << g_table.bet(g_comIX) << "      ";
+	if( g_table.pot() != 0 )
+		cout << "bet:" << g_table.bet(g_comIX) << "      ";
+	else
+		cout << "          ";
 	if( open ) {
 		Card c1, c2;
 		g_table.getHoleCards(g_comIX, c1, c2);
@@ -117,7 +121,10 @@ void draw_human()
 	setCursorPos(MAN_X, MAN_Y+1);
 	cout << "chip:" << g_table.chip(g_manIX);
 	setCursorPos(MAN_BET_X, MAN_BET_Y);
-	cout << "bet:" << g_table.bet(g_manIX) << "      ";
+	if( g_table.pot() != 0 )
+		cout << "bet:" << g_table.bet(g_manIX) << "      ";
+	else
+		cout << "          ";
 	setCursorPos(MAN_X - 2, MAN_Y);
 	if( g_manIX == g_table.dealerIX() ) {
 		cout << "D";
@@ -217,6 +224,8 @@ void print_result(const uint odr[])
 //	一人以外全員降りたら：return false;
 bool turn()
 {
+	const int nPlayer = g_table.nPlayer();
+	std::vector<bool> done(nPlayer, false);		//	全員がベット/コールしたかどうか
 	int pix = g_table.dealerIX() + 1;		//	現在の手番
 	if( g_table.turn() == TexasHoldem::PRE_FLOP )
 		pix += 2;
@@ -225,8 +234,8 @@ bool turn()
 		draw_human();
 		draw_table();
 		int act = 0;
-		while( pix >= g_table.nPlayer() )
-			pix -= g_table.nPlayer();
+		while( pix >= nPlayer )
+			pix -= nPlayer;
 		if( pix == g_manIX ) {
 			g_menuIX = MENU_CC;		//	Check/Call
 			for (;;) {
@@ -262,6 +271,7 @@ bool turn()
 			Sleep(500);
 			act = ACT_CC;
 		}
+		done[pix] = true;
 		switch( act ) {
 			case ACT_CC: {
 				int b = g_table.call() - g_table.bet(pix);
@@ -271,7 +281,7 @@ bool turn()
 				break;
 			}
 		}
-		if( g_table.allCalled() )
+		if( g_table.allCalled() && std::find(done.begin(), done.end(), false) == done.end() )
 			return true;
 		++pix;
 	}
@@ -321,7 +331,7 @@ int main()
 		draw_com(/*open:*/true);
 		draw_human();
 		draw_table();
-		show_message("Push Enter Key");
+		show_message("Push Any Key");
 		getChar();
 		clear_menu();
 		g_table.forwardDealer();
@@ -351,9 +361,9 @@ int main()
 ◎ 結果表示
 ◎ １ゲーム終了後の精算処理
 ◎ 次のゲームに進んだ時、ディーラが進まない
-● 問題：２ゲーム目が勝手に進行してしまう
+◎ 問題：２ゲーム目が勝手に進行してしまう
 ◎ 問題：ディーラーマークが消えない
-● 問題：精算後はベット値表示を消した方がよい
+◎ 問題：精算後はベット値表示を消した方がよい
 ● フォールド処理
 ● 上下キーでレイズ額を設定可能に
 ● [AllIn] メニュー追加
