@@ -325,17 +325,10 @@ bool turn()
 		++pix;
 	}
 }
-int main()
+void game()
 {
-	g_table.addPlayer(Player("YOU", 200));
-	g_manIX = 0;
-	g_table.addPlayer(Player("COM", 200, /*comp:*/true));
-	g_comIX = 1;
 	g_table.setDealer();
-	setColor(COL_BLACK, COL_WHITE);
-	setCursorPos(5, 0);
-	cout << "*** Texas Hold'em Poker ***";
-	for (;;) {
+	while ( g_table.chip(g_manIX) != 0 && g_table.chip(g_comIX) != 0 ) {
 		g_table.dealHoleCards();
 		if( turn() ) {
 			//	まだ２人以上残っている場合
@@ -395,8 +388,35 @@ int main()
 		clear_menu();
 		g_table.forwardDealer();
 	}
-	//getchar();
-	return 0;
+}
+int main()
+{
+	setColor(COL_BLACK, COL_WHITE);
+	setCursorPos(5, 0);
+	cout << "*** Texas Hold'em Poker ***";
+	g_table.addPlayer(Player("YOU", 200));
+	g_manIX = 0;
+	g_table.addPlayer(Player("COM", 200, /*comp:*/true));
+	g_comIX = 1;
+	for (;;) {
+		game();
+		if( g_table.chip(g_manIX) == 0 ) {
+			show_message("You Busted.");
+			g_table.setChip(g_manIX, 200);		//	次のゲーム用
+		} else {
+			show_message("Computer are Busted.");
+			g_table.setChip(g_comIX, 200);		//	次のゲーム用
+		}
+		cout << " Try Again ? [y/n]";
+		for (;;) {
+			int ch = getChar();
+			if( ch == 'n' || ch == 'N' )
+				return 0;
+			if( ch == 'y' || ch == 'Y' )
+				break;
+		}
+		clear_menu();
+	}
 }
 /*
 ◎ テーブル幅を最大コミュニティカード数に合わせる
@@ -432,7 +452,7 @@ int main()
 ◎ レイズ額を上げた場合は、[Raise] を選択状態に
 ◎ レイズ処理
 ◎ 人間がレイズし、COMがコールしたはずなのに、COM のチップ、ベット表示が変化しない
-● チップが無くなった時の終了処理
+◎ チップが無くなった時の終了処理
 ● 精算時に音声再生？
 ◎ _getch() は getChar() でのみコールするよう修正
 ◎ 問題：Fold したのに、人間の方のチップが増えてしまう

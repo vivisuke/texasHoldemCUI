@@ -301,6 +301,10 @@ int TexasHoldem::addPlayer(const Player &p)
 	//m_holeCards.resize(m_nPlayer);
 	return ix;
 }
+void TexasHoldem::setChip(int ix, int cp)
+{
+	m_player[ix].m_chip = cp;
+}
 int TexasHoldem::SBIX() const
 {
 	int ix = m_dealerIX + 1;

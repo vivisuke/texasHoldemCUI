@@ -68,6 +68,7 @@ public:
 	void	initialize();					//	テーブルの初期化
 	void	initForGame();			//	１ゲーム（ホールカード配布、フロップ、ターン、リバーまで）のための初期化
 	int	addPlayer(const Player &);		//	プレイヤーを追加、プレイヤーIDを返す
+	void	setChip(int ix, int cp);
 	void	setDealer();				//	ディーラをランダムに決める
 	void	dealHoleCards();			//	ホールカードを配る
 	void	dealFlop();					//	コミュニティカード3枚を配る
