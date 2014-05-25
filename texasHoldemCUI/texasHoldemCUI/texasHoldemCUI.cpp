@@ -294,6 +294,7 @@ bool turn()
 					break;
 				}
 				case MENU_RAISE:
+				case MENU_ALLIN:
 					act = ACT_RAISE;
 					break;
 			}
@@ -307,7 +308,7 @@ bool turn()
 				g_table.fold(pix);
 				return false;
 			case ACT_CC: {
-				int b = g_table.call() - g_table.bet(pix);
+				int b = min(g_table.call() - g_table.bet(pix), g_table.chip(pix));
 				if( b != 0 ) {
 					g_table.addBet(pix, b);
 				}
@@ -444,4 +445,7 @@ int main()
 ◎ 問題：大量にレイズしたら、COM, MAN のチップが増えてしまった？
 ● D：役にしたカードがどれかわかるように表示（コミュの上下に*表示？）
 ● 問題？：相手のチップ額より多い額をベットできてしまう
+● 問題：チップが足りないのにコールできてしまう
+● どちらかがオールイン（chip == 0）の場合は、自動的に先にすすめるようにする
+◎ 問題：オールインしても、それがベットに反映されない
 */
