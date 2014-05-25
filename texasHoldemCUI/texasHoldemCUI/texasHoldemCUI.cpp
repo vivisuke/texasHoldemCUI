@@ -282,7 +282,13 @@ bool turn()
 					else
 						g_menuIX = MENU_CC;
 				} else if( ch == VK_UP && g_raise < chip ) {
-					if( (g_raise += raiseUnit) > chip ) {
+					if( g_raise < raiseUnit ) {		//	SB の場合
+						if( (g_raise = raiseUnit) > chip ) {
+							g_raise = chip;
+							g_menuIX = MENU_ALLIN;
+						} else
+							g_menuIX = MENU_RAISE;
+					} else if( (g_raise += raiseUnit) > chip ) {
 						g_raise = chip;
 						g_menuIX = MENU_ALLIN;
 					} else
@@ -469,7 +475,7 @@ int main()
 ◎ 問題：次のゲームになっても役表示が残っている
 ◎ AllIn メニューを選択した場合は、金額を全チップ額に設定
 ◎ デフォルトのレイズ額：チェックの場合は0、コールの場合は必要額にする
-● SB の場合は、SB だけレイズ可能にする
+◎ SB の場合は、SB だけレイズ可能にする。その後は最小ベット額の倍数
 ◎ 問題：大量にレイズしたら、COM, MAN のチップが増えてしまった？
 ● D：役にしたカードがどれかわかるように表示（コミュの上下に*表示？）
 ● 問題？：相手のチップ額より多い額をベットできてしまう
