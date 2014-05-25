@@ -88,7 +88,7 @@ void draw_com(bool open)
 	cout << " COMPUTER ";
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(COM_X, COM_Y+1);
-	cout << "chip:" << g_table.chip(g_comIX);
+	cout << "chip:" << g_table.chip(g_comIX) << "    ";
 		setCursorPos(COM_X - 2, COM_Y);
 	if( g_comIX == g_table.dealerIX() ) {
 		cout << "D";
@@ -127,7 +127,7 @@ void draw_human()
 	cout << "  HUMAN   ";
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(MAN_X, MAN_Y+1);
-	cout << "chip:" << g_table.chip(g_manIX);
+	cout << "chip:" << g_table.chip(g_manIX) << "    ";
 	setCursorPos(MAN_BET_X, MAN_BET_Y);
 	if( g_table.pot() != 0 )
 		cout << "bet:" << g_table.bet(g_manIX) << "      ";
@@ -441,5 +441,7 @@ int main()
 ◎ AllIn メニューを選択した場合は、金額を全チップ額に設定
 ◎ デフォルトのレイズ額：チェックの場合は0、コールの場合は必要額にする
 ● SB の場合は、SB だけレイズ可能にする
-● 問題：大量にレイズしたら、COM, MAN のチップが増えてしまった
+◎ 問題：大量にレイズしたら、COM, MAN のチップが増えてしまった？
+● D：役にしたカードがどれかわかるように表示（コミュの上下に*表示？）
+● 問題？：相手のチップ額より多い額をベットできてしまう
 */
