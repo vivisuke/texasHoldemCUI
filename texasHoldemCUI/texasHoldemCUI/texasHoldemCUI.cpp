@@ -181,15 +181,16 @@ void draw_table()
 	setCursorPos(POT_X, POT_Y);
 	cout << "Pot:" << g_table.pot() << "        ";
 }
-void show_message(const char *ptr)
+void show_message(const char *ptr, int dy = 0)
+//void show_message(const char *ptr)
 {
-	setCursorPos(MENU_X, MENU_Y);
+	setCursorPos(MENU_X, MENU_Y + dy);
 	setColor(COL_GRAY, COL_BLACK);
 	cout << ptr;
 }
-void clear_menu()
+void clear_menu(int dy = 0)
 {
-	setCursorPos(MENU_X, MENU_Y);
+	setCursorPos(MENU_X, MENU_Y+dy);
 	setColor(COL_GRAY, COL_BLACK);
 	for (int i = 0; i < CONS_WD; ++i) {
 		cout << " ";
@@ -295,6 +296,16 @@ bool turn()
 						g_menuIX = MENU_RAISE;
 				} else if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
 					break;
+				} else if( ch == 'p' || ch == 'P' ) {
+					//	確率・スレッシュホールド表示
+					Card c1, c2;
+					g_table.getHoleCards(g_manIX, c1, c2);
+					double ws = calcWinSplitProb(c1, c2, g_table.communityCards());
+					show_message("prob = ", 1);
+					cout << ws;
+					int call = g_table.call() - g_table.bet(pix);
+					double th = calcThreshold(g_table.pot(), call);
+					cout << ", threshold = " << th;
 				}
 			}
 			clear_menu();

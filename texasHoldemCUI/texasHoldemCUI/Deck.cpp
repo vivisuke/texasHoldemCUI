@@ -30,7 +30,7 @@ Deck::Deck(bool shfl)
 {
 	std::random_device rnd;     // 非決定的な乱数生成器
 	//m_mt = std::mt19937(rnd());		//	random_device の乱数でシードを初期化
-	m_mt.seed(rnd());		//	random_device の乱数でシードを初期化
+	//m_mt.seed(rnd());		//	random_device の乱数でシードを初期化
 	init(shfl);
 }
 void Deck::init(bool shfl)
@@ -48,10 +48,10 @@ void Deck::init(bool shfl)
 //	まだ配られていない札をシャフルする
 void Deck::shuffle()
 {
-	std::uniform_int_distribution<> randCard(0, Card::N_CARD - 1);
 	for (int i = m_nDealt; i < Card::N_CARD - 1; ++i) {
 		//int r = rand() % (Card::N_CARD - i) + i;
-		int r = randCard(m_mt);
+		std::uniform_int_distribution<> randCard(0, Card::N_CARD - 1 - i);
+		int r = randCard(m_mt) + i;
 		if( r != i ) {
 			//	i 番目と r 番目のカードを入れ替える
 			Card c = m_card[i];
