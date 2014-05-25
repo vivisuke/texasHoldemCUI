@@ -227,7 +227,7 @@ void print_result(const uint odr[])
 		v.push_back(g_comIX);
 		g_table.split(v);
 	}
-	cout << " (Push Any Key)";
+	cout << " (Push Enter Key)";
 }
 //	プリフロップ、フロップ、ターン、リバーの処理
 //	全員コール：return true;
@@ -301,14 +301,15 @@ bool turn()
 					Card c1, c2;
 					g_table.getHoleCards(g_manIX, c1, c2);
 					double ws = calcWinSplitProb(c1, c2, g_table.communityCards());
-					show_message("prob = ", 1);
-					cout << ws;
+					show_message("WinSplit = ", 1);
+					cout << ws*100 << "%";
 					int call = g_table.call() - g_table.bet(pix);
 					double th = calcThreshold(g_table.pot(), call);
-					cout << ", threshold = " << th;
+					cout << ", threshold = " << th*100 << "%";
 				}
 			}
 			clear_menu();
+			clear_menu(1);
 			switch( g_menuIX ) {
 				case MENU_FOLD:
 					act = ACT_FOLD;
@@ -323,8 +324,18 @@ bool turn()
 					break;
 			}
 		} else {
-			Sleep(500);
-			act = ACT_CC;
+			Card c1, c2;
+			g_table.getHoleCards(pix, c1, c2);
+			double ws = calcWinSplitProb(c1, c2, g_table.communityCards());
+			//show_message("WinSplit = ", 1);
+			//cout << ws*100 << "%";
+			int call = g_table.call() - g_table.bet(pix);
+			double th = calcThreshold(g_table.pot(), call);
+			//Sleep(500);
+			if( ws < th )
+				act = ACT_FOLD;
+			else
+				act = ACT_CC;
 		}
 		done[pix] = true;
 		switch( act ) {
@@ -377,10 +388,10 @@ void game()
 		setColor(COL_GRAY, COL_BLACK);
 		bool folded = true;
 		if( g_table.folded(g_comIX) ) {
-			cout << "+++ You Win +++ (Push Any Key)";
+			cout << "+++ You Win +++ (Push Enter Key)";
 			g_table.winner(g_manIX);
 		} else if( g_table.folded(g_manIX) ) {
-			cout << "--- Com Win --- (Push Any Key)";
+			cout << "--- Com Win --- (Push Enter Key)";
 			g_table.winner(g_comIX);
 		} else {
 			folded = false;
@@ -405,7 +416,7 @@ void game()
 		draw_com(/*open:*/!folded);		//	どちらかが降りた場合は手札をさらさない
 		draw_human();
 		draw_table();
-		show_message("Push Any Key");
+		show_message("Push Enter Key");
 		getChar();
 		//	役名表示部分を消去
 		setColor(COL_GRAY, COL_BLACK);
