@@ -74,7 +74,7 @@ public:
 	void	game();						//	1ゲームの処理
 	void	forwardDealer();			//	デーラーをひとつ進める
 	int	action(int);					//	AI
-	void	setBet(int ix, int b);		//	ベット/コールを行う
+	void	addBet(int ix, int b);		//	ベット/コールを行う
 	
 private:
 	Deck	m_deck;			//	デッキ（一組のカード）

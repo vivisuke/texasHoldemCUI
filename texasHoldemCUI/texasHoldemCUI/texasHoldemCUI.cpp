@@ -208,7 +208,7 @@ bool turn()
 			case ACT_CC: {
 				int b = g_table.call() - g_table.bet(pix);
 				if( b != 0 ) {
-					g_table.setBet(pix, b);
+					g_table.addBet(pix, b);
 				}
 				break;
 			}
@@ -243,6 +243,7 @@ int main()
 				}
 			}
 		}
+		//	精算処理
 	}
 	//getchar();
 	return 0;
@@ -262,4 +263,5 @@ int main()
 ◎ とりあえず Check/Call で先に進めるようにする
 ◎ コールが揃ったら、次のターンに進む
 ◎ コミュニティカードを正しく表示
+◎ 問題：コール時に持ちチップが減っていない
 */
