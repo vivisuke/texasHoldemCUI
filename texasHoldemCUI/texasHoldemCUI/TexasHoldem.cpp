@@ -33,6 +33,7 @@ void TexasHoldem::initForGame()
 	m_holeCards.clear();		//	ホールカード配列をクリア
 	//m_bets.clear();
 	m_bets.resize(m_nPlayer);
+	m_folded.clear();
 	m_folded.resize(m_nPlayer, false);
 	m_deck.init(/*shuffle*/true);
 }
