@@ -253,6 +253,10 @@ bool turn()
 			g_menuIX = MENU_CC;		//	Check/Call
 			int chip = g_table.chip(g_manIX);
 			for (;;) {
+				if( g_menuIX == MENU_CC )
+					g_raise = g_table.call() - g_table.bet(pix);
+				else if( g_menuIX == MENU_ALLIN )
+					g_raise = chip;
 				draw_menu();
 				int ch = getChar();
 				//if( ch == 'Q' || ch == 'q' )
@@ -434,4 +438,8 @@ int main()
 ◎ 問題：Fold していないのに、COMの手札がオープンされない場合がある
 ◎ 問題：役表示：以前のテキストが残っている場合がある
 ◎ 問題：次のゲームになっても役表示が残っている
+◎ AllIn メニューを選択した場合は、金額を全チップ額に設定
+◎ デフォルトのレイズ額：チェックの場合は0、コールの場合は必要額にする
+● SB の場合は、SB だけレイズ可能にする
+● 問題：大量にレイズしたら、COM, MAN のチップが増えてしまった
 */

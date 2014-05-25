@@ -29,7 +29,7 @@ void Card::printW() const
 Deck::Deck(bool shfl)
 {
 	std::random_device rnd;     // 非決定的な乱数生成器
-	//m_mt = std::mt19937(rnd());		//	random_device の乱数でシードを初期化
+	m_mt = std::mt19937(rnd());		//	random_device の乱数でシードを初期化
 	init(shfl);
 }
 void Deck::init(bool shfl)
