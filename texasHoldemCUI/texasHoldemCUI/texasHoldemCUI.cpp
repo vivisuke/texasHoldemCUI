@@ -338,6 +338,7 @@ int main()
 			g_table.winner(g_comIX);
 		} else {
 			folded = false;
+			draw_com(/*open:*/true);
 			uint odr[2];		//	undone: ３人以上対応
 			uint hand[2];
 			std::vector<Card> v;
@@ -350,7 +351,6 @@ int main()
 			cout << handName[hand[g_comIX]] << "        ";
 			setCursorPos(MAN_X, MAN_Y + 3);
 			cout << handName[hand[g_manIX]] << "        ";
-			draw_com(/*open:*/true);
 			print_result(odr);
 		}
 		//draw_com(/*open:*/!folded);		//	どちらかが降りた場合は手札をさらさない
@@ -361,6 +361,12 @@ int main()
 		draw_table();
 		show_message("Push Any Key");
 		getChar();
+		//	役名表示部分を消去
+		setColor(COL_GRAY, COL_BLACK);
+		setCursorPos(COM_X, COM_Y + 3);
+		cout << "               ";
+		setCursorPos(MAN_X, MAN_Y + 3);
+		cout << "               ";
 		clear_menu();
 		g_table.forwardDealer();
 	}
@@ -405,5 +411,5 @@ int main()
 ◎ 問題：Fold したのに、人間の方のチップが増えてしまう
 ◎ 問題：Fold していないのに、COMの手札がオープンされない場合がある
 ◎ 問題：役表示：以前のテキストが残っている場合がある
-● 問題：次のゲームになっても役表示が残っている
+◎ 問題：次のゲームになっても役表示が残っている
 */
