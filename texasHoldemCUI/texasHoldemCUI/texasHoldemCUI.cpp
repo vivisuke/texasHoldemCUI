@@ -245,9 +245,14 @@ bool turn()
 			g_menuIX = MENU_CC;		//	Check/Call
 			for (;;) {
 				draw_menu();
-				int ch = _getch();
+				int ch = getChar();
 				//if( ch == 'Q' || ch == 'q' )
 				//	return 0;
+				if( ch == VK_LEFT && g_menuIX != 0 )
+						--g_menuIX;
+				else if( ch == VK_RIGHT && g_menuIX < N_MENU - 1)
+					++g_menuIX;
+#if	0
 				if( ch == KEY_SPECIAL ) {		//	矢印キーなどの場合
 					ch = _getch();
 					if( ch == KEY_LEFT && g_menuIX != 0 )
@@ -255,6 +260,7 @@ bool turn()
 					else if( ch == KEY_RIGHT && g_menuIX < N_MENU - 1)
 						++g_menuIX;
 				}
+#endif
 				if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
 					break;
 				}
@@ -395,4 +401,6 @@ int main()
 ● レイズ処理
 ● チップが無くなった時の終了処理
 ● 精算時に音声再生？
+◎ _getch() は getChar() でのみコールするよう修正
+● Fold したのに、人間の方のチップが増えてしまう
 */
