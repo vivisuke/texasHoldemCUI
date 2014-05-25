@@ -110,7 +110,7 @@ void TexasHoldem::split(const std::vector<int> &v)		//	ˆø‚«•ª‚¯‚¾‚Á‚½ê‡‚Ìˆ—
 {
 	//	undone: —]‚è‚ª‚ ‚éê‡‚Ìˆ—
 	for (int i = 0; i < (int)v.size(); ++i) {
-		m_player[i].m_chip = m_pot/v.size();
+		m_player[i].m_chip += m_pot/v.size();
 	}
 	m_pot = 0;
 	//m_bets.clear();
