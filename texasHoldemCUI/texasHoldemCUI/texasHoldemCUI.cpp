@@ -80,10 +80,11 @@ void draw_com(bool open)
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(COM_X, COM_Y+1);
 	cout << "chip:" << g_table.chip(g_comIX);
-	if( g_comIX == g_table.dealerIX() ) {
 		setCursorPos(COM_X - 2, COM_Y);
+	if( g_comIX == g_table.dealerIX() ) {
 		cout << "D";
-	}
+	} else
+		cout << " ";
 	if( g_comIX == g_table.BBIX() ) {
 		setCursorPos(COM_X - 3, COM_Y + 1);
 		cout << "BB";
@@ -117,10 +118,11 @@ void draw_human()
 	cout << "chip:" << g_table.chip(g_manIX);
 	setCursorPos(MAN_BET_X, MAN_BET_Y);
 	cout << "bet:" << g_table.bet(g_manIX) << "      ";
+	setCursorPos(MAN_X - 2, MAN_Y);
 	if( g_manIX == g_table.dealerIX() ) {
-		setCursorPos(MAN_X - 2, MAN_Y);
 		cout << "D";
-	}
+	} else
+		cout << " ";
 	if( g_manIX == g_table.BBIX() ) {
 		setCursorPos(MAN_X - 3, MAN_Y + 1);
 		cout << "BB";
@@ -350,7 +352,7 @@ int main()
 ◎ １ゲーム終了後の精算処理
 ◎ 次のゲームに進んだ時、ディーラが進まない
 ● 問題：２ゲーム目が勝手に進行してしまう
-● 問題：ディーラーマークが消えない
+◎ 問題：ディーラーマークが消えない
 ● 問題：精算後はベット値表示を消した方がよい
 ● フォールド処理
 ● 上下キーでレイズ額を設定可能に
