@@ -83,7 +83,10 @@ public:
 	void	addBet(int ix, int b);		//	ベット/コールを行う
 	void	winner(int ix);			//	ix が買った場合の処理
 	void	split(const std::vector<int> &v);		//	引き分けだった場合の処理
-	
+
+protected:
+	void	backBets();			//	多すぎるベットを元のプレイヤーに返す
+
 private:
 	Deck	m_deck;			//	デッキ（一組のカード）
 	int	m_nPlayer;		//	テーブルの人数

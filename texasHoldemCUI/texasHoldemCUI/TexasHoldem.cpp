@@ -100,15 +100,27 @@ void TexasHoldem::fold(int ix)
 {
 	m_folded[ix] = true;
 }
+//	多すぎるベットを元のプレイヤーに返す
+void TexasHoldem::backBets()
+{
+	int cmn = min(bet(0), bet(1));
+	for (int i = 0; i < m_nPlayer; ++i) {
+		int d = bet(i) - cmn;
+		m_player[i].m_chip += d;
+		m_pot -= d;
+	}
+}
 void TexasHoldem::winner(int ix)			//	ix が買った場合の処理
 {
+	backBets();
 	m_player[ix].m_chip += m_pot;
 	m_pot = 0;
 	//m_bets.clear();
 }
 void TexasHoldem::split(const std::vector<int> &v)		//	引き分けだった場合の処理
 {
-	//	undone: 余りがある場合の処理
+	backBets();
+	//	undone: 余りがある場合の処理 for ３人以上対応
 	for (int i = 0; i < (int)v.size(); ++i) {
 		m_player[i].m_chip += m_pot/v.size();
 	}
