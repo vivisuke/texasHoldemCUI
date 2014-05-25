@@ -170,8 +170,17 @@ void draw_menu()
 		setColor(COL_GRAY, COL_BLACK);
 		cout << " ";
 	}
-	//setColor(COL_GRAY, COL_BLACK);
-	//cout << "[Fold] [Check] [Call] [Raise] 0";
+}
+void print_result(const uint odr[])
+{
+	setCursorPos(MENU_X, MENU_Y);
+	setColor(COL_GRAY, COL_BLACK);
+	if( odr[g_manIX] > odr[g_comIX] )
+		cout << "+++ You Win +++";
+	else if( odr[g_manIX] < odr[g_comIX] )
+		cout << "--- Com Win ---";
+	else
+		cout << "=== Split ===";
 }
 //	プリフロップ、フロップ、ターン、リバーの処理
 //	全員コール：return true;
@@ -276,7 +285,9 @@ int main()
 		cout << handName[hand[g_comIX]];
 		setCursorPos(MAN_X, MAN_Y + 3);
 		cout << handName[hand[g_manIX]];
+		print_result(odr);
 		_getch();
+		clear_menu();
 	}
 	//getchar();
 	return 0;
@@ -300,8 +311,9 @@ int main()
 ◎ 問題：精算時にコンピュータの手札がオープンされない
 ◎ 精算時：役種別表示
 ◎ 人間の手番でないときは、メニューを消した方がよい
-● 結果表示
+◎ 結果表示
 ● １ゲーム終了後の精算処理
+● 次のゲームに進んだ時、ディーラが進まない
 ● フォールド処理
 ● 上下キーでレイズ額を設定可能に
 ● [AllIn] メニュー追加
