@@ -266,9 +266,16 @@ bool turn()
 						g_raise -= raiseUnit;
 					else
 						g_raise -= g_raise % raiseUnit;
+					if( g_raise != 0 )
+						g_menuIX = MENU_RAISE;
+					else
+						g_menuIX = MENU_CC;
 				} else if( ch == VK_UP && g_raise < chip ) {
-					if( (g_raise += raiseUnit) > chip )
+					if( (g_raise += raiseUnit) > chip ) {
 						g_raise = chip;
+						g_menuIX = MENU_ALLIN;
+					} else
+						g_menuIX = MENU_RAISE;
 				} else if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
 					break;
 				}
@@ -412,6 +419,7 @@ int main()
 ◎ 上下キーでレイズ額を設定可能に
 ◎ [AllIn] メニュー追加
 ◎ 問題：メニュー表示状態で q を押したらアサーション発生
+◎ レイズ額を上げた場合は、[Raise] を選択状態に
 ● レイズ処理
 ● チップが無くなった時の終了処理
 ● 精算時に音声再生？
