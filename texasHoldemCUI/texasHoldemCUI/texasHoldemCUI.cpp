@@ -35,6 +35,8 @@ using namespace std;
 #define		KEY_SPECIAL	0xe0
 #define		KEY_LEFT		0x4b
 #define		KEY_RIGHT	0x4d
+#define		KEY_UP			0x48
+#define		KEY_DOWN	0x50
 #define		ACT_FOLD		1
 #define		ACT_CC			2		//	Check/Call
 #define		ACT_RAISE	3
@@ -43,6 +45,7 @@ using namespace std;
 TexasHoldem g_table;
 int	g_comIX;
 int	g_manIX;
+//int	g_raiseMin;		//	最小レイズ額
 int	g_raise;				//	レイズ額
 int	g_menuIX;			//	選択されているメニューIX
 const char *g_menu[] = {
@@ -58,6 +61,10 @@ int getChar()
 			return VK_LEFT;
 		if( ch == KEY_RIGHT )
 			return VK_RIGHT;
+		if( ch == KEY_UP )
+			return VK_UP;
+		if( ch == KEY_DOWN )
+			return VK_DOWN;
 		return 0;
 	} else
 		return ch;
@@ -239,10 +246,12 @@ bool turn()
 		while( pix >= nPlayer )
 			pix -= nPlayer;
 		if( pix == g_manIX ) {
-			g_raise = g_table.BB();		//	undone: 既にレイズされている場合はそれ以上
+			int raiseUnit = g_table.BB();		//	undone: 既にレイズされている場合はそれ以上
 			if( g_table.turn() >= TexasHoldem::TURN )
-				g_raise *= 2;
+				raiseUnit *= 2;
+			g_raise = raiseUnit;
 			g_menuIX = MENU_CC;		//	Check/Call
+			int chip = g_table.chip(g_manIX);
 			for (;;) {
 				draw_menu();
 				int ch = getChar();
@@ -252,16 +261,15 @@ bool turn()
 						--g_menuIX;
 				else if( ch == VK_RIGHT && g_menuIX < N_MENU - 1)
 					++g_menuIX;
-#if	0
-				if( ch == KEY_SPECIAL ) {		//	矢印キーなどの場合
-					ch = _getch();
-					if( ch == KEY_LEFT && g_menuIX != 0 )
-						--g_menuIX;
-					else if( ch == KEY_RIGHT && g_menuIX < N_MENU - 1)
-						++g_menuIX;
-				}
-#endif
-				if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
+				else if( ch == VK_DOWN && g_raise != 0 ) {
+					if( g_raise % raiseUnit == 0 )
+						g_raise -= raiseUnit;
+					else
+						g_raise -= g_raise % raiseUnit;
+				} else if( ch == VK_UP && g_raise < chip ) {
+					if( (g_raise += raiseUnit) > chip )
+						g_raise = chip;
+				} else if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
 					break;
 				}
 			}
@@ -401,7 +409,7 @@ int main()
 ◎ フォールド処理
 ◎ 問題：どちらかがフォールドした場合はCOMの手札をオープンしない
 ◎ レイズ初期値：BB/2BB
-● 上下キーでレイズ額を設定可能に
+◎ 上下キーでレイズ額を設定可能に
 ◎ [AllIn] メニュー追加
 ◎ 問題：メニュー表示状態で q を押したらアサーション発生
 ● レイズ処理
