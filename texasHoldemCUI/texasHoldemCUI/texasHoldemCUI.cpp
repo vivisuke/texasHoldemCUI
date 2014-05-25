@@ -27,7 +27,7 @@ using namespace std;
 #define		POT_Y			(TABLE_Y + 1)
 #define		MENU_X		2
 #define		MENU_Y		(MAN_Y+PLAYER_HT+1)
-#define		N_MENU		3		//	メニュー選択肢数
+#define		N_MENU		4		//	メニュー選択肢数
 #define		MENU_FOLD	0
 #define		MENU_CC		1		//	Check/Call
 #define		MENU_RAISE	2
@@ -46,7 +46,7 @@ int	g_manIX;
 
 int	g_menuIX;			//	選択されているメニューIX
 const char *g_menu[] = {
-	"Fold", "Check/Call", "Raise", "AllIn"
+	"Fold", "Check/Call", "Raise", "AllIn", 0
 };
 
 int getChar()
@@ -242,8 +242,8 @@ bool turn()
 			for (;;) {
 				draw_menu();
 				int ch = _getch();
-				if( ch == 'Q' || ch == 'q' )
-					return 0;
+				//if( ch == 'Q' || ch == 'q' )
+				//	return 0;
 				if( ch == KEY_SPECIAL ) {		//	矢印キーなどの場合
 					ch = _getch();
 					if( ch == KEY_LEFT && g_menuIX != 0 )
@@ -315,10 +315,11 @@ int main()
 				}
 			}
 		}
-		draw_com(/*open:*/true);
+		//draw_com(/*open:*/true);
 		//	精算処理
 		setCursorPos(MENU_X, MENU_Y);
 		setColor(COL_GRAY, COL_BLACK);
+		bool folded = true;
 		if( g_table.folded(g_comIX) ) {
 			cout << "+++ You Win +++ (Push Any Key)";
 			g_table.winner(g_manIX);
@@ -326,6 +327,7 @@ int main()
 			cout << "--- Com Win --- (Push Any Key)";
 			g_table.winner(g_manIX);
 		} else {
+			folded = false;
 			uint odr[2];		//	undone: ３人以上対応
 			uint hand[2];
 			std::vector<Card> v;
@@ -338,11 +340,13 @@ int main()
 			cout << handName[hand[g_comIX]];
 			setCursorPos(MAN_X, MAN_Y + 3);
 			cout << handName[hand[g_manIX]];
+			draw_com(/*open:*/true);
 			print_result(odr);
 		}
+		//draw_com(/*open:*/!folded);		//	どちらかが降りた場合は手札をさらさない
 		getChar();
 		clear_menu();
-		draw_com(/*open:*/true);
+		draw_com(/*open:*/!folded);		//	どちらかが降りた場合は手札をさらさない
 		draw_human();
 		draw_table();
 		show_message("Push Any Key");
@@ -379,8 +383,8 @@ int main()
 ◎ 問題：ディーラーマークが消えない
 ◎ 問題：精算後はベット値表示を消した方がよい
 ◎ フォールド処理
-● 問題：フォールドした場合はCOMの手札をオープンしない
+◎ 問題：どちらかがフォールドした場合はCOMの手札をオープンしない
 ● 上下キーでレイズ額を設定可能に
 ◎ [AllIn] メニュー追加
-● 問題：メニュー表示状態で q を押したらアサーション発生
+◎ 問題：メニュー表示状態で q を押したらアサーション発生
 */
