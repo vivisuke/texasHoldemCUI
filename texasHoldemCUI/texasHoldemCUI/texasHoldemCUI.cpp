@@ -335,7 +335,7 @@ int main()
 			g_table.winner(g_manIX);
 		} else if( g_table.folded(g_manIX) ) {
 			cout << "--- Com Win --- (Push Any Key)";
-			g_table.winner(g_manIX);
+			g_table.winner(g_comIX);
 		} else {
 			folded = false;
 			uint odr[2];		//	undone: ３人以上対応
@@ -402,5 +402,6 @@ int main()
 ● チップが無くなった時の終了処理
 ● 精算時に音声再生？
 ◎ _getch() は getChar() でのみコールするよう修正
-● Fold したのに、人間の方のチップが増えてしまう
+◎ Fold したのに、人間の方のチップが増えてしまう
+● Fold していないのに、COMの手札がオープンされない
 */
