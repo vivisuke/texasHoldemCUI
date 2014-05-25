@@ -400,6 +400,15 @@ void TexasHoldem::addBet(int ix, int b)		//	ベット/コールを行う
 	m_pot += b;
 	m_call = max(m_call, bet(ix));
 }
+bool TexasHoldem::isAllIn() const		//	一人以外全員がオールインか？
+{
+	int n = 0;		//	チップを持っている人の数
+	for (int i = 0; i < m_nPlayer; ++i) {
+		if( m_player[i].m_chip != 0 )
+			++n;
+	}
+	return n <= 1;
+}
 bool TexasHoldem::allCalled() const
 {
 	for (int i = 0; i < m_nPlayer; ++i) {

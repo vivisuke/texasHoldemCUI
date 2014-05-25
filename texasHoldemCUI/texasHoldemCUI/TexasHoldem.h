@@ -60,6 +60,7 @@ public:
 	int	bet(int ix) const;
 	int	pot() const { return m_pot; }
 	bool	allCalled() const;
+	bool	isAllIn() const;		//	一人以外全員がオールインか？
 	const std::vector<Card>	&communityCards() const { return m_communityCards; }
 	void	playersCard(int ix, std::vector<Card> &);
 	bool	folded(int ix) const { return m_folded[ix]; }

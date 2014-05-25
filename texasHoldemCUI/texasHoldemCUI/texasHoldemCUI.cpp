@@ -233,6 +233,13 @@ void print_result(const uint odr[])
 //	一人以外全員降りたら：return false;
 bool turn()
 {
+	if( g_table.isAllIn() ) {
+		draw_com();
+		draw_human();
+		draw_table();
+		Sleep(500);
+		return true;
+	}
 	const int nPlayer = g_table.nPlayer();
 	std::vector<bool> done(nPlayer, false);		//	全員がベット/コールしたかどうか
 	int pix = g_table.dealerIX() + 1;		//	現在の手番
@@ -339,7 +346,8 @@ void game()
 				if( turn() ) {
 					//	まだ２人以上残っている場合
 					g_table.dealTurn();
-					turn();
+					//if( !g_table.isAllIn() )
+						turn();
 				}
 			}
 		}
@@ -466,6 +474,6 @@ int main()
 ● D：役にしたカードがどれかわかるように表示（コミュの上下に*表示？）
 ● 問題？：相手のチップ額より多い額をベットできてしまう
 ● 問題：チップが足りないのにコールできてしまう
-● どちらかがオールイン（chip == 0）の場合は、自動的に先にすすめるようにする
+◎ どちらかがオールイン（chip == 0）の場合は、自動的に先にすすめるようにする
 ◎ 問題：オールインしても、それがベットに反映されない
 */
