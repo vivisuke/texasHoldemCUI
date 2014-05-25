@@ -1,6 +1,8 @@
 #include "consoleUtil.h"
 #include "Deck.h"
 #include "TexasHoldem.h"
+#include <windows.h>
+#include <conio.h>
 
 using namespace std;
 
@@ -18,14 +20,23 @@ using namespace std;
 #define		MAN_Y			(TABLE_Y+TABLE_HT+1)
 #define		MAN_BET_X	(MAN_X + PLAYER_WD + 1)
 #define		MAN_BET_Y	(MAN_Y + 1)
-#define		MENU_X		2
-#define		MENU_Y		(MAN_Y+PLAYER_HT+1)
 #define		POT_X			(TABLE_X + TABLE_WD + 1)
 #define		POT_Y			(TABLE_Y + 1)
+#define		MENU_X		2
+#define		MENU_Y		(MAN_Y+PLAYER_HT+1)
+#define		N_MENU		3		//	メニュー選択肢数
+#define		KEY_LEFT		0x4b
+#define		KEY_RIGHT	0x4d
+
 
 TexasHoldem g_table;
 int	g_comIX;
 int	g_manIX;
+
+int	g_menuIX;			//	選択されているメニューIX
+const char *g_menu[] = {
+	"FOLD", "CHECK/CALL", "RAISE"
+};
 
 void draw_card(int x, int y, Card c)
 {
@@ -117,8 +128,17 @@ void draw_table()
 void draw_menu()
 {
 	setCursorPos(MENU_X, MENU_Y);
-	setColor(COL_GRAY, COL_BLACK);
-	cout << "[Fold] [Check] [Call] [Raise] 0";
+	for (int i = 0; i < N_MENU; ++i) {
+		if( i == g_menuIX )
+			setColor(COL_BLACK, COL_WHITE);
+		else
+			setColor(COL_GRAY, COL_BLACK);
+		cout << "[" << g_menu[i] << "]";
+		setColor(COL_GRAY, COL_BLACK);
+		cout << " ";
+	}
+	//setColor(COL_GRAY, COL_BLACK);
+	//cout << "[Fold] [Check] [Call] [Raise] 0";
 }
 int main()
 {
@@ -134,8 +154,23 @@ int main()
 	draw_com();
 	draw_human();
 	draw_table();
-	draw_menu();
-	getchar();
+	for (;;) {
+		draw_menu();
+		int ch = _getch();
+		if( ch == 'Q' || ch == 'q' )
+			break;
+		if( ch == 0xe0 ) {
+			ch = _getch();
+			if( ch == KEY_LEFT && g_menuIX != 0 )
+				--g_menuIX;
+			else if( ch == KEY_RIGHT && g_menuIX < N_MENU - 1)
+				++g_menuIX;
+		}
+		if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
+			break;
+		}
+	}
+	//getchar();
 	return 0;
 }
 /*
@@ -148,4 +183,6 @@ int main()
 ◎ 乱数生成器を mt19937 に変更
 ◎ カード表示：白背景に黒 or 赤で描画
 ◎ 伏せているカードはシアンで表示
+◎ メニューをデータ化
+◎ 左右キーでメニュー選択可能に
 */
