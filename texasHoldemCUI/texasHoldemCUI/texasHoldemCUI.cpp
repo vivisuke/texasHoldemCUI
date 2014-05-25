@@ -254,12 +254,18 @@ int main()
 		}
 		draw_com(/*open:*/true);
 		//	精算処理
-		uint odr0, odr1;
+		uint odr[2];		//	undone: ３人以上対応
+		uint hand[2];
 		std::vector<Card> v;
-		g_table.playersCard(0, v);
-		checkHand(v, odr0);
-		g_table.playersCard(1, v);
-		checkHand(v, odr1);
+		for (int i = 0; i < g_table.nPlayer(); ++i) {
+			g_table.playersCard(i, v);
+			hand[i] = checkHand(v, odr[i]);
+		}
+		setColor(COL_GRAY, COL_BLACK);
+		setCursorPos(COM_X, COM_Y + 3);
+		cout << handName[hand[g_comIX]];
+		setCursorPos(MAN_X, MAN_Y + 3);
+		cout << handName[hand[g_manIX]];
 	}
 	//getchar();
 	return 0;
@@ -281,6 +287,7 @@ int main()
 ◎ コミュニティカードを正しく表示
 ◎ 問題：コール時に持ちチップが減っていない
 ◎ 問題：精算時にコンピュータの手札がオープンされない
+◎ 精算時：役種別表示
 ● １ゲーム終了後の精算処理
 ● フォールド処理
 ● 上下キーでレイズ額を設定可能に
