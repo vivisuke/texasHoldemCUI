@@ -43,7 +43,7 @@ using namespace std;
 TexasHoldem g_table;
 int	g_comIX;
 int	g_manIX;
-
+int	g_raise;				//	レイズ額
 int	g_menuIX;			//	選択されているメニューIX
 const char *g_menu[] = {
 	"Fold", "Check/Call", "Raise", "AllIn", 0
@@ -200,6 +200,7 @@ void draw_menu()
 		setColor(COL_GRAY, COL_BLACK);
 		cout << " ";
 	}
+	cout << g_raise << "    ";
 }
 void print_result(const uint odr[])
 {
@@ -238,6 +239,9 @@ bool turn()
 		while( pix >= nPlayer )
 			pix -= nPlayer;
 		if( pix == g_manIX ) {
+			g_raise = g_table.BB();		//	undone: 既にレイズされている場合はそれ以上
+			if( g_table.turn() >= TexasHoldem::TURN )
+				g_raise *= 2;
 			g_menuIX = MENU_CC;		//	Check/Call
 			for (;;) {
 				draw_menu();
@@ -384,7 +388,11 @@ int main()
 ◎ 問題：精算後はベット値表示を消した方がよい
 ◎ フォールド処理
 ◎ 問題：どちらかがフォールドした場合はCOMの手札をオープンしない
+◎ レイズ初期値：BB/2BB
 ● 上下キーでレイズ額を設定可能に
 ◎ [AllIn] メニュー追加
 ◎ 問題：メニュー表示状態で q を押したらアサーション発生
+● レイズ処理
+● チップが無くなった時の終了処理
+● 精算時に音声再生？
 */

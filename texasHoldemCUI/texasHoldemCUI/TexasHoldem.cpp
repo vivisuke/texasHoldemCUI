@@ -70,16 +70,19 @@ void TexasHoldem::getHoleCards(int ix, Card &c1, Card &c2) const
 }
 void TexasHoldem::dealFlop()					//	コミュニティカード3枚を配る
 {
+	m_turn = FLOP;
 	m_communityCards.push_back(m_deck.deal());
 	m_communityCards.push_back(m_deck.deal());
 	m_communityCards.push_back(m_deck.deal());
 }
 void TexasHoldem::dealTurn()					//	コミュニティカード4枚目を配る
 {
+	m_turn = TURN;
 	m_communityCards.push_back(m_deck.deal());
 }
 void TexasHoldem::dealRiver()				//	コミュニティカード5枚目を配る
 {
+	m_turn = RIVER;
 	m_communityCards.push_back(m_deck.deal());
 }
 void TexasHoldem::playersCard(int ix, std::vector<Card> &v)

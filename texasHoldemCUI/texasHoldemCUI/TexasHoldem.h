@@ -51,6 +51,7 @@ public:
 	void	printProb() const;
 	int	nPlayer() const { return m_nPlayer; }
 	int	turn() const { return m_turn; }		//	ターン、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
+	int	BB() const { return m_BB; }
 	int	dealerIX() const { return m_dealerIX; }
 	int	SBIX() const;
 	int	BBIX() const;
