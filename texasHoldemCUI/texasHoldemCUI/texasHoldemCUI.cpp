@@ -347,9 +347,9 @@ int main()
 			}
 			setColor(COL_GRAY, COL_BLACK);
 			setCursorPos(COM_X, COM_Y + 3);
-			cout << handName[hand[g_comIX]];
+			cout << handName[hand[g_comIX]] << "        ";
 			setCursorPos(MAN_X, MAN_Y + 3);
-			cout << handName[hand[g_manIX]];
+			cout << handName[hand[g_manIX]] << "        ";
 			draw_com(/*open:*/true);
 			print_result(odr);
 		}
@@ -402,7 +402,8 @@ int main()
 ● チップが無くなった時の終了処理
 ● 精算時に音声再生？
 ◎ _getch() は getChar() でのみコールするよう修正
-◎ Fold したのに、人間の方のチップが増えてしまう
-◎ Fold していないのに、COMの手札がオープンされない場合がある
-● 役表示：以前のテキストが残っている場合がある
+◎ 問題：Fold したのに、人間の方のチップが増えてしまう
+◎ 問題：Fold していないのに、COMの手札がオープンされない場合がある
+◎ 問題：役表示：以前のテキストが残っている場合がある
+● 問題：次のゲームになっても役表示が残っている
 */
