@@ -52,6 +52,18 @@ const char *g_menu[] = {
 	"Fold", "Check/Call", "Raise", "AllIn", 0
 };
 
+namespace My {
+	std::string to_string(int v)
+	{
+		if( !v ) return std::string("0");
+		std::string str;
+		while( v != 0 ) {
+			str = std::string(1, v % 10 + '0') + str;
+			v /= 10;
+		}
+		return str;
+	}
+};
 int getChar()
 {
 	int ch = _getch();
@@ -229,6 +241,12 @@ void print_result(const uint odr[])
 	}
 	cout << " (Push Enter Key)";
 }
+void show_com_act(const char *act)
+{
+	setColor(COL_GRAY, COL_BLACK);
+	setCursorPos(COM_X, COM_Y + 3);
+	cout << act << "        ";
+}
 //	プリフロップ、フロップ、ターン、リバーの処理
 //	全員コール：return true;
 //	一人以外全員降りたら：return false;
@@ -253,10 +271,10 @@ bool turn()
 		int act = 0;
 		while( pix >= nPlayer )
 			pix -= nPlayer;
+		int raiseUnit = g_table.BB();		//	undone: 既にレイズされている場合はそれ以上
+		if( g_table.turn() >= TexasHoldem::TURN )
+			raiseUnit *= 2;
 		if( pix == g_manIX ) {
-			int raiseUnit = g_table.BB();		//	undone: 既にレイズされている場合はそれ以上
-			if( g_table.turn() >= TexasHoldem::TURN )
-				raiseUnit *= 2;
 			g_raise = raiseUnit;
 			g_menuIX = MENU_CC;		//	Check/Call
 			int chip = g_table.chip(g_manIX);
@@ -324,6 +342,7 @@ bool turn()
 					break;
 			}
 		} else {
+			//	コンピュータの手番
 			Card c1, c2;
 			g_table.getHoleCards(pix, c1, c2);
 			double ws = calcWinSplitProb(c1, c2, g_table.communityCards());
@@ -332,10 +351,25 @@ bool turn()
 			int call = g_table.call() - g_table.bet(pix);
 			double th = calcThreshold(g_table.pot(), call);
 			//Sleep(500);
-			if( ws < th )
+			if( ws < th ) {
 				act = ACT_FOLD;
-			else
-				act = ACT_CC;
+				show_com_act("fold");
+			} else {
+				int b = g_table.call() - g_table.bet(pix);		//	コール必要額
+				if( !b && ws > 0.5 ) {
+					g_raise = min(raiseUnit, g_table.chip(pix));
+					act = ACT_RAISE;
+					std::string str("raise ");
+					str += My::to_string(g_raise);
+					show_com_act(str.c_str());
+				} else {
+					act = ACT_CC;
+					if( !b )
+						show_com_act("check");
+					else
+						show_com_act("call");
+				}
+			}
 		}
 		done[pix] = true;
 		switch( act ) {
