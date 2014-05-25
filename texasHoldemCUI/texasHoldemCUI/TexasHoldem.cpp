@@ -91,6 +91,19 @@ void TexasHoldem::playersCard(int ix, std::vector<Card> &v)
 		v.push_back(m_communityCards[i]);
 	}
 }
+void TexasHoldem::winner(int ix)			//	ix が買った場合の処理
+{
+	m_player[ix].m_chip += m_pot;
+	m_pot = 0;
+}
+void TexasHoldem::split(const std::vector<int> &v)		//	引き分けだった場合の処理
+{
+	//	undone: 余りがある場合の処理
+	for (int i = 0; i < (int)v.size(); ++i) {
+		m_player[i].m_chip = m_pot/v.size();
+	}
+	m_pot = 0;
+}
 void TexasHoldem::showDown()				//	手札を晒し、勝敗を決め、チップを精算
 {
 	std::cout << "\n";

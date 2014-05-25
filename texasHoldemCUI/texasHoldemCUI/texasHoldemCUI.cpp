@@ -47,6 +47,20 @@ const char *g_menu[] = {
 	"Fold", "Check/Call", "Raise"
 };
 
+int getChar()
+{
+	int ch = _getch();
+	if( ch == KEY_SPECIAL ) {		//	矢印キーなどの場合
+		ch = _getch();
+		if( ch == KEY_LEFT )
+			return VK_LEFT;
+		if( ch == KEY_RIGHT )
+			return VK_RIGHT;
+		return 0;
+	} else
+		return ch;
+}
+
 void draw_card(int x, int y, Card c)
 {
 	if( c.m_suit == Card::SPADES || c.m_suit == Card::CLUBS )
@@ -150,6 +164,12 @@ void draw_table()
 	setCursorPos(POT_X, POT_Y);
 	cout << "Pot:" << g_table.pot() << "        ";
 }
+void show_message(const char *ptr)
+{
+	setCursorPos(MENU_X, MENU_Y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << ptr;
+}
 void clear_menu()
 {
 	setCursorPos(MENU_X, MENU_Y);
@@ -175,12 +195,20 @@ void print_result(const uint odr[])
 {
 	setCursorPos(MENU_X, MENU_Y);
 	setColor(COL_GRAY, COL_BLACK);
-	if( odr[g_manIX] > odr[g_comIX] )
+	if( odr[g_manIX] > odr[g_comIX] ) {
 		cout << "+++ You Win +++";
-	else if( odr[g_manIX] < odr[g_comIX] )
+		g_table.winner(g_manIX);
+	} else if( odr[g_manIX] < odr[g_comIX] ) {
 		cout << "--- Com Win ---";
-	else
+		g_table.winner(g_comIX);
+	} else {
 		cout << "=== Split ===";
+		std::vector<int> v;
+		v.push_back(g_manIX);
+		v.push_back(g_comIX);
+		g_table.split(v);
+	}
+	cout << " (Push Any Key)";
 }
 //	プリフロップ、フロップ、ターン、リバーの処理
 //	全員コール：return true;
@@ -253,11 +281,11 @@ int main()
 	g_table.addPlayer(Player("COM", 200, /*comp:*/true));
 	g_comIX = 1;
 	g_table.setDealer();
-	g_table.dealHoleCards();
 	setColor(COL_BLACK, COL_WHITE);
 	setCursorPos(5, 0);
 	cout << "*** Texas Hold'em Poker ***";
 	for (;;) {
+		g_table.dealHoleCards();
 		if( turn() ) {
 			//	まだ２人以上残っている場合
 			g_table.dealFlop();
@@ -286,8 +314,15 @@ int main()
 		setCursorPos(MAN_X, MAN_Y + 3);
 		cout << handName[hand[g_manIX]];
 		print_result(odr);
-		_getch();
+		getChar();
 		clear_menu();
+		draw_com(/*open:*/true);
+		draw_human();
+		draw_table();
+		show_message("Push Enter Key");
+		getChar();
+		clear_menu();
+		g_table.forwardDealer();
 	}
 	//getchar();
 	return 0;
@@ -312,8 +347,11 @@ int main()
 ◎ 精算時：役種別表示
 ◎ 人間の手番でないときは、メニューを消した方がよい
 ◎ 結果表示
-● １ゲーム終了後の精算処理
-● 次のゲームに進んだ時、ディーラが進まない
+◎ １ゲーム終了後の精算処理
+◎ 次のゲームに進んだ時、ディーラが進まない
+● 問題：２ゲーム目が勝手に進行してしまう
+● 問題：ディーラーマークが消えない
+● 問題：精算後はベット値表示を消した方がよい
 ● フォールド処理
 ● 上下キーでレイズ額を設定可能に
 ● [AllIn] メニュー追加
