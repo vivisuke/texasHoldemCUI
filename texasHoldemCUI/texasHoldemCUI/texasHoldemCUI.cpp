@@ -7,6 +7,7 @@
 
 using namespace std;
 
+#define		CONS_WD		80
 #define		TABLE_X		10
 #define		TABLE_Y		(COM_Y+PLAYER_HT+1)
 #define		TABLE_HT		3
@@ -149,6 +150,14 @@ void draw_table()
 	setCursorPos(POT_X, POT_Y);
 	cout << "Pot:" << g_table.pot() << "        ";
 }
+void clear_menu()
+{
+	setCursorPos(MENU_X, MENU_Y);
+	setColor(COL_GRAY, COL_BLACK);
+	for (int i = 0; i < CONS_WD; ++i) {
+		cout << " ";
+	}
+}
 void draw_menu()
 {
 	setCursorPos(MENU_X, MENU_Y);
@@ -197,6 +206,7 @@ bool turn()
 					break;
 				}
 			}
+			clear_menu();
 			switch( g_menuIX ) {
 				case MENU_FOLD:
 					act = ACT_FOLD;
@@ -266,6 +276,7 @@ int main()
 		cout << handName[hand[g_comIX]];
 		setCursorPos(MAN_X, MAN_Y + 3);
 		cout << handName[hand[g_manIX]];
+		_getch();
 	}
 	//getchar();
 	return 0;
@@ -288,6 +299,8 @@ int main()
 ◎ 問題：コール時に持ちチップが減っていない
 ◎ 問題：精算時にコンピュータの手札がオープンされない
 ◎ 精算時：役種別表示
+◎ 人間の手番でないときは、メニューを消した方がよい
+● 結果表示
 ● １ゲーム終了後の精算処理
 ● フォールド処理
 ● 上下キーでレイズ額を設定可能に
