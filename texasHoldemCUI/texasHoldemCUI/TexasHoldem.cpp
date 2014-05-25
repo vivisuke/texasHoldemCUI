@@ -412,7 +412,7 @@ bool TexasHoldem::isAllIn() const		//	一人以外全員がオールインか？
 bool TexasHoldem::allCalled() const
 {
 	for (int i = 0; i < m_nPlayer; ++i) {
-		if( bet(i) != m_call )
+		if( bet(i) != m_call && m_player[i].m_chip != 0 )	//	チップがまだあるのにコールしていない
 			return false;
 	}
 	return true;
