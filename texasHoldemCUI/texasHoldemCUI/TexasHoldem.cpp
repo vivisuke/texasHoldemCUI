@@ -91,6 +91,11 @@ void TexasHoldem::playersCard(int ix, std::vector<Card> &v)
 		v.push_back(m_communityCards[i]);
 	}
 }
+//	フォールド
+void TexasHoldem::fold(int ix)
+{
+	m_folded[ix] = true;
+}
 void TexasHoldem::winner(int ix)			//	ix が買った場合の処理
 {
 	m_player[ix].m_chip += m_pot;

@@ -31,6 +31,7 @@ using namespace std;
 #define		MENU_FOLD	0
 #define		MENU_CC		1		//	Check/Call
 #define		MENU_RAISE	2
+#define		MENU_ALLIN	3
 #define		KEY_SPECIAL	0xe0
 #define		KEY_LEFT		0x4b
 #define		KEY_RIGHT	0x4d
@@ -45,7 +46,7 @@ int	g_manIX;
 
 int	g_menuIX;			//	選択されているメニューIX
 const char *g_menu[] = {
-	"Fold", "Check/Call", "Raise"
+	"Fold", "Check/Call", "Raise", "AllIn"
 };
 
 int getChar()
@@ -273,6 +274,9 @@ bool turn()
 		}
 		done[pix] = true;
 		switch( act ) {
+			case ACT_FOLD:
+				g_table.fold(pix);
+				return false;
 			case ACT_CC: {
 				int b = g_table.call() - g_table.bet(pix);
 				if( b != 0 ) {
@@ -313,19 +317,29 @@ int main()
 		}
 		draw_com(/*open:*/true);
 		//	精算処理
-		uint odr[2];		//	undone: ３人以上対応
-		uint hand[2];
-		std::vector<Card> v;
-		for (int i = 0; i < g_table.nPlayer(); ++i) {
-			g_table.playersCard(i, v);
-			hand[i] = checkHand(v, odr[i]);
-		}
+		setCursorPos(MENU_X, MENU_Y);
 		setColor(COL_GRAY, COL_BLACK);
-		setCursorPos(COM_X, COM_Y + 3);
-		cout << handName[hand[g_comIX]];
-		setCursorPos(MAN_X, MAN_Y + 3);
-		cout << handName[hand[g_manIX]];
-		print_result(odr);
+		if( g_table.folded(g_comIX) ) {
+			cout << "+++ You Win +++ (Push Any Key)";
+			g_table.winner(g_manIX);
+		} else if( g_table.folded(g_manIX) ) {
+			cout << "--- Com Win --- (Push Any Key)";
+			g_table.winner(g_manIX);
+		} else {
+			uint odr[2];		//	undone: ３人以上対応
+			uint hand[2];
+			std::vector<Card> v;
+			for (int i = 0; i < g_table.nPlayer(); ++i) {
+				g_table.playersCard(i, v);
+				hand[i] = checkHand(v, odr[i]);
+			}
+			setColor(COL_GRAY, COL_BLACK);
+			setCursorPos(COM_X, COM_Y + 3);
+			cout << handName[hand[g_comIX]];
+			setCursorPos(MAN_X, MAN_Y + 3);
+			cout << handName[hand[g_manIX]];
+			print_result(odr);
+		}
 		getChar();
 		clear_menu();
 		draw_com(/*open:*/true);
@@ -364,7 +378,9 @@ int main()
 ◎ 問題：２ゲーム目が勝手に進行してしまう
 ◎ 問題：ディーラーマークが消えない
 ◎ 問題：精算後はベット値表示を消した方がよい
-● フォールド処理
+◎ フォールド処理
+● 問題：フォールドした場合はCOMの手札をオープンしない
 ● 上下キーでレイズ額を設定可能に
-● [AllIn] メニュー追加
+◎ [AllIn] メニュー追加
+● 問題：メニュー表示状態で q を押したらアサーション発生
 */

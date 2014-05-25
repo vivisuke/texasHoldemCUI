@@ -61,6 +61,7 @@ public:
 	bool	allCalled() const;
 	const std::vector<Card>	&communityCards() const { return m_communityCards; }
 	void	playersCard(int ix, std::vector<Card> &);
+	bool	folded(int ix) const { return m_folded[ix]; }
 
 public:
 	void	initialize();					//	テーブルの初期化
@@ -74,6 +75,7 @@ public:
 	void	showDown();				//	手札を晒し、勝敗を決め、チップを精算
 	void	game();						//	1ゲームの処理
 	void	forwardDealer();			//	デーラーをひとつ進める
+	void	fold(int ix);					//	フォールド
 	int	action(int);					//	AI
 	void	addBet(int ix, int b);		//	ベット/コールを行う
 	void	winner(int ix);			//	ix が買った場合の処理
