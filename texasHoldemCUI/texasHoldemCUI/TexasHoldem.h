@@ -59,6 +59,7 @@ public:
 	int	bet(int ix) const;
 	int	pot() const { return m_pot; }
 	bool	allCalled() const;
+	const std::vector<Card>	&communityCards() const { return m_communityCards; }
 
 public:
 	void	initialize();					//	ƒe[ƒuƒ‹‚Ì‰Šú‰»

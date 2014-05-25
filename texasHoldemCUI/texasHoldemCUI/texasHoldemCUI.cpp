@@ -47,7 +47,12 @@ const char *g_menu[] = {
 
 void draw_card(int x, int y, Card c)
 {
+	if( c.m_suit == Card::SPADES || c.m_suit == Card::CLUBS )
+		setColor(COL_BLACK, COL_WHITE);
+	else
+		setColor(COL_RED, COL_WHITE);
 	setCursorPos(x, y);
+	coutW(c.toStringW());
 }
 
 void draw_com()
@@ -125,8 +130,11 @@ void draw_table()
 		for(int i = 0; i < TABLE_WD; ++i)
 			cout << " ";
 	}
-	setCursorPos(TABLE_X + 2, TABLE_Y + 1);
-	cout << "?? ?? ?? ?? ??";
+	const std::vector<Card> &cc = g_table.communityCards();
+	for (int i = 0; i < (int)cc.size(); ++i) {
+		//setCursorPos(TABLE_X + 2 + i * 3, TABLE_Y + 1);
+		draw_card(TABLE_X + 2 + i * 3, TABLE_Y + 1, cc[i]);
+	}
 	
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(POT_X, POT_Y);
@@ -253,5 +261,5 @@ int main()
 ◎ 左右キーでメニュー選択可能に
 ◎ とりあえず Check/Call で先に進めるようにする
 ◎ コールが揃ったら、次のターンに進む
-● コミュニティカードを正しく表示
+◎ コミュニティカードを正しく表示
 */
