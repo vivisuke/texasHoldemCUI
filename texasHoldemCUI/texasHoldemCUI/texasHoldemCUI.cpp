@@ -32,6 +32,8 @@ using namespace std;
 #define		MENU_CC		1		//	Check/Call
 #define		MENU_RAISE	2
 #define		MENU_ALLIN	3
+#define		HAND_HELP_X		(CONS_WD/2+8)
+#define		HAND_HELP_Y		1
 #define		KEY_SPECIAL	0xe0
 #define		KEY_LEFT		0x4b
 #define		KEY_RIGHT	0x4d
@@ -90,6 +92,91 @@ void draw_card(int x, int y, Card c)
 		setColor(COL_RED, COL_WHITE);
 	setCursorPos(x, y);
 	coutW(c.toStringW());
+}
+void draw_hand_help()
+{
+	int x = HAND_HELP_X;
+	int y = HAND_HELP_Y;
+	draw_card(x+0*3, y, Card(Card::SPADES, Card::RANK_K));
+	draw_card(x+1*3, y, Card(Card::SPADES, Card::RANK_Q));
+	draw_card(x+2*3, y, Card(Card::SPADES, Card::RANK_J));
+	draw_card(x+3*3, y, Card(Card::SPADES, Card::RANK_10));
+	draw_card(x+4*3, y, Card(Card::SPADES, Card::RANK_9));
+	setCursorPos(x+5*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << handName[STRAIGHT_FLUSH];
+	++y;
+	draw_card(x+0*3, y, Card(Card::HERTS, Card::RANK_5));
+	draw_card(x+1*3, y, Card(Card::SPADES, Card::RANK_5));
+	draw_card(x+2*3, y, Card(Card::CLUBS, Card::RANK_5));
+	draw_card(x+3*3, y, Card(Card::DIAMONDS, Card::RANK_5));
+	draw_card(x+4*3, y, Card(Card::DIAMONDS, Card::RANK_7));
+	setCursorPos(x+5*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << handName[FOUR_OF_A_KIND];
+	++y;
+	draw_card(x+0*3, y, Card(Card::HERTS, Card::RANK_7));
+	draw_card(x+1*3, y, Card(Card::SPADES, Card::RANK_7));
+	draw_card(x+2*3, y, Card(Card::CLUBS, Card::RANK_7));
+	draw_card(x+3*3, y, Card(Card::DIAMONDS, Card::RANK_3));
+	draw_card(x+4*3, y, Card(Card::DIAMONDS, Card::RANK_3));
+	setCursorPos(x+5*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << handName[FULL_HOUSE];
+	++y;
+	draw_card(x+0*3, y, Card(Card::CLUBS, Card::RANK_A));
+	draw_card(x+1*3, y, Card(Card::CLUBS, Card::RANK_J));
+	draw_card(x+2*3, y, Card(Card::CLUBS, Card::RANK_7));
+	draw_card(x+3*3, y, Card(Card::CLUBS, Card::RANK_3));
+	draw_card(x+4*3, y, Card(Card::CLUBS, Card::RANK_2));
+	setCursorPos(x+5*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << handName[FLUSH];
+	++y;
+	draw_card(x+0*3, y, Card(Card::DIAMONDS, Card::RANK_10));
+	draw_card(x+1*3, y, Card(Card::SPADES, Card::RANK_9));
+	draw_card(x+2*3, y, Card(Card::DIAMONDS, Card::RANK_8));
+	draw_card(x+3*3, y, Card(Card::HERTS, Card::RANK_7));
+	draw_card(x+4*3, y, Card(Card::CLUBS, Card::RANK_6));
+	setCursorPos(x+5*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << handName[STRAIGHT];
+	++y;
+	draw_card(x+0*3, y, Card(Card::HERTS, Card::RANK_7));
+	draw_card(x+1*3, y, Card(Card::SPADES, Card::RANK_7));
+	draw_card(x+2*3, y, Card(Card::CLUBS, Card::RANK_7));
+	draw_card(x+3*3, y, Card(Card::CLUBS, Card::RANK_A));
+	draw_card(x+4*3, y, Card(Card::DIAMONDS, Card::RANK_3));
+	setCursorPos(x+5*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << handName[THREE_OF_A_KIND];
+	++y;
+	draw_card(x+0*3, y, Card(Card::HERTS, Card::RANK_A));
+	draw_card(x+1*3, y, Card(Card::SPADES, Card::RANK_A));
+	draw_card(x+2*3, y, Card(Card::CLUBS, Card::RANK_5));
+	draw_card(x+3*3, y, Card(Card::SPADES, Card::RANK_5));
+	draw_card(x+4*3, y, Card(Card::DIAMONDS, Card::RANK_Q));
+	setCursorPos(x+5*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << handName[TWO_PAIR];
+	++y;
+	draw_card(x+0*3, y, Card(Card::CLUBS, Card::RANK_K));
+	draw_card(x+1*3, y, Card(Card::DIAMONDS, Card::RANK_K));
+	draw_card(x+2*3, y, Card(Card::CLUBS, Card::RANK_10));
+	draw_card(x+3*3, y, Card(Card::HERTS, Card::RANK_5));
+	draw_card(x+4*3, y, Card(Card::DIAMONDS, Card::RANK_2));
+	setCursorPos(x+5*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << handName[ONE_PAIR];
+	++y;
+	draw_card(x+0*3, y, Card(Card::CLUBS, Card::RANK_K));
+	draw_card(x+1*3, y, Card(Card::DIAMONDS, Card::RANK_J));
+	draw_card(x+2*3, y, Card(Card::CLUBS, Card::RANK_10));
+	draw_card(x+3*3, y, Card(Card::HERTS, Card::RANK_5));
+	draw_card(x+4*3, y, Card(Card::DIAMONDS, Card::RANK_2));
+	setCursorPos(x+5*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << handName[HIGH_CARD];
 }
 
 void draw_com(bool open = false);
@@ -467,6 +554,7 @@ int main()
 	setColor(COL_BLACK, COL_WHITE);
 	setCursorPos(5, 0);
 	cout << "*** Texas Hold'em Poker ***";
+	draw_hand_help();
 	g_table.addPlayer(Player("YOU", 200));
 	g_manIX = 0;
 	g_table.addPlayer(Player("COM", 200, /*comp:*/true));
