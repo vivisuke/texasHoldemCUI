@@ -394,6 +394,7 @@ void TexasHoldem::addBet(int ix, int b)		//	ベット/コールを行う
 	m_player[ix].m_chip -= b;
 	m_bets[ix].push_back(b);
 	m_pot += b;
+	m_call = max(m_call, bet(ix));
 }
 bool TexasHoldem::allCalled() const
 {

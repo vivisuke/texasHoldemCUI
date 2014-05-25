@@ -309,7 +309,12 @@ bool turn()
 				}
 				break;
 			}
+			case ACT_RAISE:
+				g_table.addBet(pix, g_raise);
+				break;
 		}
+		draw_com();
+		draw_human();
 		if( g_table.allCalled() && std::find(done.begin(), done.end(), false) == done.end() )
 			return true;
 		++pix;
@@ -420,7 +425,8 @@ int main()
 ◎ [AllIn] メニュー追加
 ◎ 問題：メニュー表示状態で q を押したらアサーション発生
 ◎ レイズ額を上げた場合は、[Raise] を選択状態に
-● レイズ処理
+◎ レイズ処理
+◎ 人間がレイズし、COMがコールしたはずなのに、COM のチップ、ベット表示が変化しない
 ● チップが無くなった時の終了処理
 ● 精算時に音声再生？
 ◎ _getch() は getChar() でのみコールするよう修正
