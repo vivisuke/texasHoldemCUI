@@ -9,6 +9,7 @@
 using namespace std;
 
 #define		CONS_WD		80
+#define		CONS_HT		25
 #define		TABLE_X		10
 #define		TABLE_Y		(COM_Y+PLAYER_HT+1)
 #define		TABLE_HT		3
@@ -34,6 +35,8 @@ using namespace std;
 #define		MENU_ALLIN	3
 #define		HAND_HELP_X		(CONS_WD/2+8)
 #define		HAND_HELP_Y		1
+#define		VS_RAND_X			(CONS_WD/2+8)
+#define		VS_RAND_Y			1
 #define		KEY_SPECIAL	0xe0
 #define		KEY_LEFT		0x4b
 #define		KEY_RIGHT	0x4d
@@ -63,6 +66,15 @@ namespace My {
 			str = std::string(1, v % 10 + '0') + str;
 			v /= 10;
 		}
+		return str;
+	}
+	std::string to_percent_string(double v)
+	{
+		int i = (int)(v * 100);
+		std::string str = to_string(i);
+		str += '.';
+		str += to_string((int)(v*1000) - i * 10);
+		str += '%';
 		return str;
 	}
 };
@@ -178,6 +190,78 @@ void draw_hand_help()
 	setColor(COL_GRAY, COL_BLACK);
 	cout << handName[HIGH_CARD];
 }
+void clear_rightHalf()
+{
+	setColor(COL_GRAY, COL_BLACK);
+	for (int y = 0; y < CONS_HT; ++y) {
+		setCursorPos(CONS_WD/2, y);
+		int WD = y < CONS_HT - 1 ? CONS_WD/2 : CONS_WD/2 - 1;
+		for (int x = 0; x < WD; ++x) {
+			cout << ' ';
+		}
+	}
+}
+//	各ターンでの vs ランダム勝率を表示
+void draw_winSplit_vsRand(int x, int y, Card c1, Card c2)
+{
+	const std::vector<Card> &cc = g_table.communityCards();
+	std::vector<Card> v;
+	double ws = calcWinSplitProb(c1, c2, v);
+	setCursorPos(x - 6, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << My::to_percent_string(ws);
+	draw_card(x, y, c1);
+	draw_card(x+3, y, c2);
+	if( cc.size() < 3 ) return;
+	++y;
+	v.push_back(cc[0]);
+	v.push_back(cc[1]);
+	v.push_back(cc[2]);
+	ws = calcWinSplitProb(c1, c2, v);
+	setCursorPos(x - 6, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << My::to_percent_string(ws);
+	draw_card(x, y, c1);
+	draw_card(x+3, y, c2);
+	for (int i = 0; i < (int)v.size(); ++i) {
+		draw_card(x+3*(i+2), y, v[i]);
+	}
+	if( cc.size() < 4 ) return;
+	++y;
+	v.push_back(cc[3]);
+	ws = calcWinSplitProb(c1, c2, v);
+	setCursorPos(x - 6, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << My::to_percent_string(ws);
+	draw_card(x, y, c1);
+	draw_card(x+3, y, c2);
+	for (int i = 0; i < (int)v.size(); ++i) {
+		draw_card(x+3*(i+2), y, v[i]);
+	}
+	if( cc.size() < 5 ) return;
+	++y;
+	v.push_back(cc[4]);
+	ws = calcWinSplitProb(c1, c2, v);
+	setCursorPos(x - 6, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << My::to_percent_string(ws);
+	draw_card(x, y, c1);
+	draw_card(x+3, y, c2);
+	for (int i = 0; i < (int)v.size(); ++i) {
+		draw_card(x+3*(i+2), y, v[i]);
+	}
+}
+void draw_winSplit_vsRand()
+{
+	clear_rightHalf();
+	int x = VS_RAND_X;
+	int y = VS_RAND_Y;
+	Card c1, c2;
+	g_table.getHoleCards(g_comIX, c1, c2);
+	draw_winSplit_vsRand(x, y, c1, c2);
+	g_table.getHoleCards(g_manIX, c1, c2);
+	draw_winSplit_vsRand(x, y+5, c1, c2);
+}
 
 void draw_com(bool open = false);
 void draw_com(bool open)
@@ -291,7 +375,7 @@ void clear_menu(int dy = 0)
 {
 	setCursorPos(MENU_X, MENU_Y+dy);
 	setColor(COL_GRAY, COL_BLACK);
-	for (int i = 0; i < CONS_WD; ++i) {
+	for (int i = 0; i < CONS_WD/2; ++i) {
 		cout << " ";
 	}
 }
@@ -443,8 +527,9 @@ bool turn()
 				show_com_act("fold");
 			} else {
 				int b = g_table.call() - g_table.bet(pix);		//	コール必要額
-				if( !b && ws > 0.5 ) {
-					g_raise = min(raiseUnit, g_table.chip(pix));
+				if( !b && ws >= 0.55 ) {
+					int t = (int)((ws - 0.50)/0.05);
+					g_raise = min(t * raiseUnit, g_table.chip(pix));
 					act = ACT_RAISE;
 					std::string str("raise ");
 					str += My::to_string(g_raise);
@@ -532,13 +617,16 @@ void game()
 			print_result(odr);
 		}
 		//draw_com(/*open:*/!folded);		//	どちらかが降りた場合は手札をさらさない
-		getChar();
+		int ch = getChar();
+		if( ch == 'p' )
+			draw_winSplit_vsRand();
 		clear_menu();
 		draw_com(/*open:*/!folded);		//	どちらかが降りた場合は手札をさらさない
 		draw_human();
 		draw_table();
 		show_message("Push Enter Key");
 		getChar();
+		//clear_winSplit();
 		//	役名表示部分を消去
 		setColor(COL_GRAY, COL_BLACK);
 		setCursorPos(COM_X, COM_Y + 3);
