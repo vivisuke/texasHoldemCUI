@@ -50,7 +50,7 @@ public:
 	void	printPlayerChips() const;		//	プレイヤーのチップのみ表示
 	void	printProb() const;
 	int	nPlayer() const { return m_nPlayer; }
-	int	round() const { return m_round; }		//	ターン、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
+	int	round() const { return m_round; }		//	ラウンド、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
 	int	BB() const { return m_BB; }
 	int	dealerIX() const { return m_dealerIX; }
 	int	SBIX() const;
@@ -58,6 +58,7 @@ public:
 	int	call() const { return m_call; }		//	コールするのに必要なトータルチップ額
 	int	chip(int ix) const { return m_player[ix].m_chip; }
 	int	bet(int ix) const;
+	int	bet(int ix, int round) const;
 	int	pot() const { return m_pot; }
 	bool	allCalled() const;
 	bool	isAllIn() const;		//	一人以外全員がオールインか？
@@ -95,11 +96,11 @@ private:
 	int	m_dealerIX;		//	ディーラインデックス
 	int	m_pot;				//	ポット（m_bets の全合計）
 	int	m_call;				//	コールするためのトータルチップ額
-	int	m_round;			//	ターン、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
+	int	m_round;			//	ラウンド、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
 	bool	m_showDowned;
 	std::vector<Player>	m_player;		//	各プレイヤー
 	std::vector<bool>		m_folded;		//	FOLD済み
 	std::vector<HoleCards>	m_holeCards;		//	各プレイヤーのホールカード
 	std::vector<Card>		m_communityCards;	//	コミュニティカード
-	std::vector<std::vector<int>>	m_bets;			//	各プレイヤーのターンごとのベット額
+	std::vector<std::vector<int>>	m_bets;			//	各プレイヤーのラウンドごとのベット額
 };

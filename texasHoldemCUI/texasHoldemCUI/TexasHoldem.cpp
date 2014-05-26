@@ -48,7 +48,7 @@ void TexasHoldem::dealHoleCards()			//	ホールカードを配る
 	for (int i = 0; i < m_nPlayer; ++i) {
 		HoleCards hc(m_deck.deal(), m_deck.deal());		//	カードを２枚配る
 		m_holeCards.push_back(hc);					//	それをホールカード配列に追加
-		m_bets[i].resize(4, /*value:*/0);
+		m_bets[i].resize(4, /*value:*/0);		//	m_bets はラウンド毎のベット額
 	}
 	int ix = m_dealerIX + 1;
 	if( ix >= m_nPlayer ) ix = 0;
@@ -335,6 +335,10 @@ int TexasHoldem::bet(int ix) const
 {
 	const std::vector<int> &b = m_bets[ix];
 	return std::accumulate(b.begin(), b.end(), 0);
+}
+int TexasHoldem::bet(int ix, int round) const
+{
+	return m_bets[ix][round];
 }
 //	プレイヤーのチップのみ表示
 void TexasHoldem::printPlayerChips() const

@@ -435,6 +435,10 @@ bool round()
 	int pix = g_table.dealerIX() + 1;		//	現在の手番
 	if( g_table.round() == TexasHoldem::PRE_FLOP )
 		pix += 2;
+	//	最後のレイズ額（レイズ額は、これ以上）
+	//	$2 に対して $5 レイズした場合、lastRaise は $3
+	//	リレイズする場合は $5 + $3 = $8 以上となる
+	int lastRaise = 0;
 	for (;;) {
 		draw_com();
 		draw_human();
@@ -451,7 +455,7 @@ bool round()
 			int chip = g_table.chip(g_manIX);
 			for (;;) {
 				if( g_menuIX == MENU_CC )
-					g_raise = g_table.call() - g_table.bet(pix);
+					g_raise = g_table.call() - g_table.bet(pix);	//	コール必要額
 				else if( g_menuIX == MENU_ALLIN )
 					g_raise = chip;
 				draw_menu();
@@ -463,6 +467,14 @@ bool round()
 				else if( ch == VK_RIGHT && g_menuIX < N_MENU - 1)
 					++g_menuIX;
 				else if( ch == VK_DOWN && g_raise != 0 ) {
+#if	1
+					if( (g_raise -= raiseUnit) < 0 )
+						g_raise = 0;
+					if( g_raise >= raiseUnit )
+						g_menuIX = MENU_RAISE;
+					else
+						g_menuIX = MENU_CC;
+#else
 					if( g_raise % raiseUnit == 0 )
 						g_raise -= raiseUnit;
 					else
@@ -471,8 +483,19 @@ bool round()
 						g_menuIX = MENU_RAISE;
 					else
 						g_menuIX = MENU_CC;
+#endif
 				} else if( ch == VK_UP && g_raise < chip ) {
+#if	1
+					if( g_raise == g_table.BB() / 2 )		//	SB の場合
+						g_raise = g_table.BB() / 2;
+					if( (g_raise += raiseUnit) > chip ) {
+						g_raise = chip;
+						g_menuIX = MENU_ALLIN;
+					} else
+						g_menuIX = MENU_RAISE;
+#else
 					if( g_raise < raiseUnit ) {		//	SB の場合
+						//	最小額は SB + BB、以降は BB 単位
 						if( (g_raise = raiseUnit) > chip ) {
 							g_raise = chip;
 							g_menuIX = MENU_ALLIN;
@@ -483,6 +506,7 @@ bool round()
 						g_menuIX = MENU_ALLIN;
 					} else
 						g_menuIX = MENU_RAISE;
+#endif
 				} else if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
 					break;
 				} else if( ch == 'p' || ch == 'P' ) {
