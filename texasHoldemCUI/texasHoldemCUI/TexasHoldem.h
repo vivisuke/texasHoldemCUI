@@ -50,7 +50,7 @@ public:
 	void	printPlayerChips() const;		//	プレイヤーのチップのみ表示
 	void	printProb() const;
 	int	nPlayer() const { return m_nPlayer; }
-	int	turn() const { return m_turn; }		//	ターン、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
+	int	round() const { return m_round; }		//	ターン、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
 	int	BB() const { return m_BB; }
 	int	dealerIX() const { return m_dealerIX; }
 	int	SBIX() const;
@@ -95,7 +95,7 @@ private:
 	int	m_dealerIX;		//	ディーラインデックス
 	int	m_pot;				//	ポット（m_bets の全合計）
 	int	m_call;				//	コールするためのトータルチップ額
-	int	m_turn;				//	ターン、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
+	int	m_round;			//	ターン、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
 	bool	m_showDowned;
 	std::vector<Player>	m_player;		//	各プレイヤー
 	std::vector<bool>		m_folded;		//	FOLD済み

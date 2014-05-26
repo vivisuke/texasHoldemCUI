@@ -25,7 +25,7 @@ void TexasHoldem::initForGame()
 {
 	m_BB = m_initBB;
 	m_pot = 0;
-	m_turn = 0;		//	0:ホールカード配布、1:フロップ、2:ターン、3:リバー
+	m_round = 0;		//	0:ホールカード配布、1:フロップ、2:ターン、3:リバー
 	m_showDowned = false;
 	m_communityCards.clear();
 	m_bets.clear();
@@ -71,19 +71,19 @@ void TexasHoldem::getHoleCards(int ix, Card &c1, Card &c2) const
 }
 void TexasHoldem::dealFlop()					//	コミュニティカード3枚を配る
 {
-	m_turn = FLOP;
+	m_round = FLOP;
 	m_communityCards.push_back(m_deck.deal());
 	m_communityCards.push_back(m_deck.deal());
 	m_communityCards.push_back(m_deck.deal());
 }
 void TexasHoldem::dealTurn()					//	コミュニティカード4枚目を配る
 {
-	m_turn = TURN;
+	m_round = TURN;
 	m_communityCards.push_back(m_deck.deal());
 }
 void TexasHoldem::dealRiver()				//	コミュニティカード5枚目を配る
 {
-	m_turn = RIVER;
+	m_round = RIVER;
 	m_communityCards.push_back(m_deck.deal());
 }
 void TexasHoldem::playersCard(int ix, std::vector<Card> &v)

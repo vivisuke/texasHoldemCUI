@@ -262,7 +262,6 @@ void draw_winSplit_vsRand()
 	g_table.getHoleCards(g_manIX, c1, c2);
 	draw_winSplit_vsRand(x, y+5, c1, c2);
 }
-
 void draw_com(bool open = false);
 void draw_com(bool open)
 {
@@ -416,13 +415,14 @@ void show_com_act(const char *act)
 {
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(COM_X, COM_Y + 3);
-	cout << act << "        ";
+	cout << act << "            ";
 }
 //	プリフロップ、フロップ、ターン、リバーの処理
 //	全員コール：return true;
 //	一人以外全員降りたら：return false;
-bool turn()
+bool round()
 {
+	show_com_act("");
 	if( g_table.isAllIn() ) {
 		draw_com();
 		draw_human();
@@ -433,7 +433,7 @@ bool turn()
 	const int nPlayer = g_table.nPlayer();
 	std::vector<bool> done(nPlayer, false);		//	全員がベット/コールしたかどうか
 	int pix = g_table.dealerIX() + 1;		//	現在の手番
-	if( g_table.turn() == TexasHoldem::PRE_FLOP )
+	if( g_table.round() == TexasHoldem::PRE_FLOP )
 		pix += 2;
 	for (;;) {
 		draw_com();
@@ -443,7 +443,7 @@ bool turn()
 		while( pix >= nPlayer )
 			pix -= nPlayer;
 		int raiseUnit = g_table.BB();		//	undone: 既にレイズされている場合はそれ以上
-		if( g_table.turn() >= TexasHoldem::TURN )
+		if( g_table.round() >= TexasHoldem::TURN )
 			raiseUnit *= 2;
 		if( pix == g_manIX ) {
 			g_raise = raiseUnit;
@@ -574,17 +574,17 @@ void game()
 	g_table.setDealer();
 	while ( g_table.chip(g_manIX) != 0 && g_table.chip(g_comIX) != 0 ) {
 		g_table.dealHoleCards();
-		if( turn() ) {
+		if( round() ) {
 			//	まだ２人以上残っている場合
 			g_table.dealFlop();
-			if( turn() ) {
+			if( round() ) {
 				//	まだ２人以上残っている場合
 				g_table.dealTurn();
-				if( turn() ) {
+				if( round() ) {
 					//	まだ２人以上残っている場合
-					g_table.dealTurn();
+					g_table.dealRiver();
 					//if( !g_table.isAllIn() )
-						turn();
+						round();
 				}
 			}
 		}
