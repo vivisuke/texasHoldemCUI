@@ -532,10 +532,13 @@ bool round()
 	//	最後のレイズ額（レイズ額は、これ以上）
 	//	$2 に対して $5 レイズした場合、lastRaise は $3
 	//	リレイズする場合は $5 + $3 = $8 以上となる
+	int lastRaiseIX = -1;
 	int lastRaise = 0;
+	int raiseCnt = 0;		//	レイズ回数
 	for (;;) {
 		for (int ix = 0; ix < g_table.nPlayer(); ++ix) {
-			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/ix == g_manIX);
+			//draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/ix == g_manIX);
+			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/true);		//	for Debug
 		}
 		//draw_player(g_comIX, COM_X, COM_Y);
 		//draw_com();
@@ -655,13 +658,14 @@ bool round()
 				show_act(px, py, "fold");
 			} else {
 				int b = g_table.call() - g_table.bet(pix);		//	コール必要額
-				if( !b && ws >= 0.55 ) {
+				if( /*!b &&*/ ws >= 0.60 + 0.05 * raiseCnt ) {
 					int t = (int)((ws - 0.50)/0.05);
 					g_raise = min(t * raiseUnit, g_table.chip(pix));
 					act = ACT_RAISE;
 					std::string str("raise ");
 					str += My::to_string(g_raise);
 					show_act(px, py, str.c_str());
+					g_raise += b;
 				} else {
 					act = ACT_CC;
 					if( !b )
@@ -686,6 +690,7 @@ bool round()
 				break;
 			}
 			case ACT_RAISE:
+				++raiseCnt;
 				g_table.addBet(pix, g_raise);
 				break;
 		}
