@@ -447,11 +447,18 @@ void draw_table()
 	const std::vector<Card> &cc = g_table.communityCards();
 	for (int i = 0; i < (int)cc.size(); ++i) {
 		//setCursorPos(TABLE_X + 2 + i * 3, TABLE_Y + 1);
-		draw_card(TABLE_X + 2 + i * 3, TABLE_Y + 1, cc[i]);
+		draw_card(TABLE_X + 2 + i * 3, TABLE_Y + 2, cc[i]);
 	}
 	
 	setColor(COL_GRAY, COL_DARK_GREEN);
-	setCursorPos(TABLE_X+2, TABLE_Y + TABLE_HT - 1);
+	setCursorPos(TABLE_X+1, TABLE_Y);
+	switch( g_table.round() ) {
+		case 0:	cout << "Pre-Flop:";	break;
+		case 1:	cout << "Flop:";	break;
+		case 2:	cout << "Turn:";	break;
+		case 3:	cout << "River:";	break;
+	}
+	setCursorPos(TABLE_X+1, TABLE_Y + TABLE_HT - 1);
 	cout << "Pot:" << g_table.pot();
 	//setColor(COL_GRAY, COL_DARK_GREEN);
 	cout << "        ";
