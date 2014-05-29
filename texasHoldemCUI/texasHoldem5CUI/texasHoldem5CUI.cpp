@@ -83,7 +83,7 @@ TexasHoldem g_table;
 int	g_comIX;
 int	g_manIX;
 //int	g_raiseMin;		//	最小レイズ額
-int	g_raise;				//	レイズ額
+int	g_raiseMake;		//	レイズメイク額（コール額＋独自のレイズ額）
 int	g_menuIX;			//	選択されているメニューIX
 const char *g_menu[] = {
 	"Fold", "Check/Call", "Raise", "AllIn", 0
@@ -541,7 +541,7 @@ void draw_menu()
 		setColor(COL_GRAY, COL_BLACK);
 		cout << " ";
 	}
-	cout << g_raise << "    ";
+	cout << My::to_string(g_raiseMake, 6);
 }
 void print_result(const uint odr[])
 {
@@ -571,14 +571,14 @@ void show_com_act(const char *act)
 int human_act(int raiseUnit)
 {
 	int pix = g_manIX;
-	g_raise = raiseUnit;
+	g_raiseMake = raiseUnit;
 	g_menuIX = MENU_CC;		//	Check/Call
 	int chip = g_table.chip(g_manIX);
 	for (;;) {
 		if( g_menuIX == MENU_CC )
-			g_raise = g_table.call() - g_table.bet(pix);	//	コール必要額
+			g_raiseMake = g_table.call() - g_table.bet(pix);	//	コール必要額
 		else if( g_menuIX == MENU_ALLIN )
-			g_raise = chip;
+			g_raiseMake = chip;
 		draw_menu();
 		int ch = getChar();
 		//if( ch == 'Q' || ch == 'q' )
@@ -587,43 +587,43 @@ int human_act(int raiseUnit)
 				--g_menuIX;
 		else if( ch == VK_RIGHT && g_menuIX < N_MENU - 1)
 			++g_menuIX;
-		else if( ch == VK_DOWN && g_raise != 0 ) {
+		else if( ch == VK_DOWN && g_raiseMake != 0 ) {
 #if	1
-			if( (g_raise -= raiseUnit) < 0 )
-				g_raise = 0;
-			if( g_raise >= raiseUnit )
+			if( (g_raiseMake -= raiseUnit) < 0 )
+				g_raiseMake = 0;
+			if( g_raiseMake >= raiseUnit )
 				g_menuIX = MENU_RAISE;
 			else
 				g_menuIX = MENU_CC;
 #else
-			if( g_raise % raiseUnit == 0 )
-				g_raise -= raiseUnit;
+			if( g_raiseMake % raiseUnit == 0 )
+				g_raiseMake -= raiseUnit;
 			else
-				g_raise -= g_raise % raiseUnit;
-			if( g_raise != 0 )
+				g_raiseMake -= g_raiseMake % raiseUnit;
+			if( g_raiseMake != 0 )
 				g_menuIX = MENU_RAISE;
 			else
 				g_menuIX = MENU_CC;
 #endif
-		} else if( ch == VK_UP && g_raise < chip ) {
+		} else if( ch == VK_UP && g_raiseMake < chip ) {
 #if	1
-			if( g_raise == g_table.BB() / 2 )		//	SB の場合
-				g_raise = g_table.BB() / 2;
-			if( (g_raise += raiseUnit) > chip ) {
-				g_raise = chip;
+			if( g_raiseMake == g_table.BB() / 2 )		//	SB の場合
+				g_raiseMake = g_table.BB() / 2;
+			if( (g_raiseMake += raiseUnit) > chip ) {
+				g_raiseMake = chip;
 				g_menuIX = MENU_ALLIN;
 			} else
 				g_menuIX = MENU_RAISE;
 #else
-			if( g_raise < raiseUnit ) {		//	SB の場合
+			if( g_raiseMake < raiseUnit ) {		//	SB の場合
 				//	最小額は SB + BB、以降は BB 単位
-				if( (g_raise = raiseUnit) > chip ) {
-					g_raise = chip;
+				if( (g_raiseMake = raiseUnit) > chip ) {
+					g_raiseMake = chip;
 					g_menuIX = MENU_ALLIN;
 				} else
 					g_menuIX = MENU_RAISE;
-			} else if( (g_raise += raiseUnit) > chip ) {
-				g_raise = chip;
+			} else if( (g_raiseMake += raiseUnit) > chip ) {
+				g_raiseMake = chip;
 				g_menuIX = MENU_ALLIN;
 			} else
 				g_menuIX = MENU_RAISE;
@@ -729,12 +729,12 @@ bool round()
 				int b = g_table.call() - g_table.bet(pix);		//	コール必要額
 				if( g_table.chip(pix) > b && ws >= 0.60 + 0.05 * raiseCnt ) {
 					int t = (int)((ws - 0.50)/0.05);
-					g_raise = min(t * raiseUnit, g_table.chip(pix) - b);
+					g_raiseMake = min(t * raiseUnit, g_table.chip(pix) - b);
 					act = ACT_RAISE;
-					std::string str("raise ");
-					str += My::to_string(g_raise);
+					std::string str("make ");
+					str += My::to_string(g_raiseMake);
 					show_act(px, py, str.c_str());
-					g_raise += b;
+					g_raiseMake += b;
 				} else {
 					act = ACT_CC;
 					if( !b )
@@ -762,7 +762,7 @@ bool round()
 			}
 			case ACT_RAISE:
 				++raiseCnt;
-				g_table.addBet(pix, g_table.round(), g_raise);
+				g_table.addBet(pix, g_table.round(), g_raiseMake);
 				break;
 		}
 		draw_player(pix, playerPos[pix].m_x, playerPos[pix].m_y, pix == g_manIX);
