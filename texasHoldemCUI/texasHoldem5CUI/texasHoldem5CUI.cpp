@@ -580,16 +580,17 @@ int human_act(int raiseUnit)
 			g_raiseMake = g_table.call() - g_table.bet(pix);	//	コール必要額
 		else if( g_menuIX == MENU_ALLIN )
 			g_raiseMake = chip;
+		else if( g_menuIX == MENU_RAISE )
+			g_raiseMake = max(g_raiseMake, toCall + (g_lastRaise != 0 ? g_lastRaise : raiseUnit));
 		draw_menu();
 		int ch = getChar();
 		//if( ch == 'Q' || ch == 'q' )
 		//	return 0;
 		if( ch == VK_LEFT && g_menuIX != 0 )
-				--g_menuIX;
+			--g_menuIX;
 		else if( ch == VK_RIGHT && g_menuIX < N_MENU - 1)
 			++g_menuIX;
 		else if( ch == VK_DOWN && g_raiseMake != 0 ) {
-#if	1
 			if( (g_raiseMake -= raiseUnit) < 0 )
 				g_raiseMake = 0;
 			if( g_raiseMake > toCall && g_raiseMake < toCall + g_lastRaise )
@@ -598,20 +599,7 @@ int human_act(int raiseUnit)
 				g_menuIX = MENU_RAISE;
 			else
 				g_menuIX = MENU_CC;
-#else
-			if( g_raiseMake % raiseUnit == 0 )
-				g_raiseMake -= raiseUnit;
-			else
-				g_raiseMake -= g_raiseMake % raiseUnit;
-			if( g_raiseMake != 0 )
-				g_menuIX = MENU_RAISE;
-			else
-				g_menuIX = MENU_CC;
-#endif
 		} else if( ch == VK_UP && g_raiseMake < chip ) {
-#if	1
-			//if( g_raiseMake == g_table.BB() / 2 )		//	SB の場合
-			//	g_raiseMake = g_table.BB() / 2;
 			g_raiseMake = max(g_raiseMake, toCall);
 			if( g_raiseMake == toCall && g_lastRaise != 0 )
 				g_raiseMake += g_lastRaise;
@@ -622,20 +610,6 @@ int human_act(int raiseUnit)
 				g_menuIX = MENU_ALLIN;
 			} else
 				g_menuIX = MENU_RAISE;
-#else
-			if( g_raiseMake < raiseUnit ) {		//	SB の場合
-				//	最小額は SB + BB、以降は BB 単位
-				if( (g_raiseMake = raiseUnit) > chip ) {
-					g_raiseMake = chip;
-					g_menuIX = MENU_ALLIN;
-				} else
-					g_menuIX = MENU_RAISE;
-			} else if( (g_raiseMake += raiseUnit) > chip ) {
-				g_raiseMake = chip;
-				g_menuIX = MENU_ALLIN;
-			} else
-				g_menuIX = MENU_RAISE;
-#endif
 		} else if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
 			break;
 		} else if( ch == 'p' || ch == 'P' ) {
