@@ -42,7 +42,7 @@ using namespace std;
 #define		N_PLAYER		5
 #define		CONS_WD		80
 #define		CONS_HT		25
-#define		TABLE_X		10
+#define		TABLE_X		11
 #define		TABLE_Y		(COM_Y+PLAYER_HT+1)
 #define		TABLE_HT		5
 #define		TABLE_WD		(2+2*5+1*4+2)
@@ -105,11 +105,11 @@ struct CurPos {
 	int m_y;
 };
 const CurPos playerPos[] = {
-	{15, 14},
+	{16, 14},
 	{1, 8},
-	{10, 2},
-	{20, 2},
-	{30, 8},
+	{11, 2},
+	{21, 2},
+	{31, 8},
 };
 
 namespace My {
@@ -345,7 +345,7 @@ void draw_player(int ix, int x, int y, bool open = false)
 {
 	setCursorPos(x, y);
 	setColor(COL_BLACK, g_table.folded(ix) ? COL_LIGHT_GRAY : COL_YELLOW);
-	cout << g_table.player(ix).m_name;
+	cout << " " << g_table.player(ix).m_name << " ";
 	setColor(COL_GRAY, COL_BLACK);
 	if( ix == g_table.dealerIX() )
 		cout << " D ";
