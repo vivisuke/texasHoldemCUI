@@ -568,6 +568,99 @@ void show_com_act(const char *act)
 	setCursorPos(COM_X, COM_Y + 3);
 	cout << act << "            ";
 }
+int human_act(int raiseUnit)
+{
+	int pix = g_manIX;
+	g_raise = raiseUnit;
+	g_menuIX = MENU_CC;		//	Check/Call
+	int chip = g_table.chip(g_manIX);
+	for (;;) {
+		if( g_menuIX == MENU_CC )
+			g_raise = g_table.call() - g_table.bet(pix);	//	コール必要額
+		else if( g_menuIX == MENU_ALLIN )
+			g_raise = chip;
+		draw_menu();
+		int ch = getChar();
+		//if( ch == 'Q' || ch == 'q' )
+		//	return 0;
+		if( ch == VK_LEFT && g_menuIX != 0 )
+				--g_menuIX;
+		else if( ch == VK_RIGHT && g_menuIX < N_MENU - 1)
+			++g_menuIX;
+		else if( ch == VK_DOWN && g_raise != 0 ) {
+#if	1
+			if( (g_raise -= raiseUnit) < 0 )
+				g_raise = 0;
+			if( g_raise >= raiseUnit )
+				g_menuIX = MENU_RAISE;
+			else
+				g_menuIX = MENU_CC;
+#else
+			if( g_raise % raiseUnit == 0 )
+				g_raise -= raiseUnit;
+			else
+				g_raise -= g_raise % raiseUnit;
+			if( g_raise != 0 )
+				g_menuIX = MENU_RAISE;
+			else
+				g_menuIX = MENU_CC;
+#endif
+		} else if( ch == VK_UP && g_raise < chip ) {
+#if	1
+			if( g_raise == g_table.BB() / 2 )		//	SB の場合
+				g_raise = g_table.BB() / 2;
+			if( (g_raise += raiseUnit) > chip ) {
+				g_raise = chip;
+				g_menuIX = MENU_ALLIN;
+			} else
+				g_menuIX = MENU_RAISE;
+#else
+			if( g_raise < raiseUnit ) {		//	SB の場合
+				//	最小額は SB + BB、以降は BB 単位
+				if( (g_raise = raiseUnit) > chip ) {
+					g_raise = chip;
+					g_menuIX = MENU_ALLIN;
+				} else
+					g_menuIX = MENU_RAISE;
+			} else if( (g_raise += raiseUnit) > chip ) {
+				g_raise = chip;
+				g_menuIX = MENU_ALLIN;
+			} else
+				g_menuIX = MENU_RAISE;
+#endif
+		} else if( ch == '\r' || ch == '\n' ) {	//	メニュー確定
+			break;
+		} else if( ch == 'p' || ch == 'P' ) {
+			//	確率・スレッシュホールド表示
+			Card c1, c2;
+			g_table.getHoleCards(g_manIX, c1, c2);
+			double ws = calcWinSplitProb(c1, c2, g_table.communityCards(), N_PLAYER);
+			show_message("WinSplit = ", 1);
+			cout << ws*100 << "%";
+			int call = g_table.call() - g_table.bet(pix);
+			double th = calcThreshold(g_table.pot(), call);
+			cout << ", threshold = " << th*100 << "%";
+		}
+	}
+	clear_menu();
+	clear_menu(1);	//	メニューの次の行も消去
+	int act = 0;
+	switch( g_menuIX ) {
+		case MENU_FOLD:
+			act = ACT_FOLD;
+			break;
+		case MENU_CC: {
+			act = ACT_CC;
+			break;
+		}
+		case MENU_RAISE:
+		case MENU_ALLIN:
+			act = ACT_RAISE;
+			break;
+	}
+	//done[pix] = true;
+	return act;
+}
 //	プリフロップ、フロップ、ターン、リバーの処理
 //	全員コール：return true;
 //	一人以外全員降りたら：return false;
@@ -616,8 +709,9 @@ bool round()
 			continue;
 		}
 		if( pix == g_manIX ) {		//	人間の手番
-#if	0
-			act = ACT_CC;		//	for Test
+#if	1
+			//act = ACT_CC;		//	for Test
+			act = human_act(raiseUnit);
 #else
 			g_raise = raiseUnit;
 			g_menuIX = MENU_CC;		//	Check/Call

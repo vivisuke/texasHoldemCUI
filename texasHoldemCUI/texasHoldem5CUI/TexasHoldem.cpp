@@ -57,10 +57,13 @@ void TexasHoldem::dealHoleCards()			//	ホールカードを配る
 	int ix = m_dealerIX + 1;
 	if( ix >= m_nPlayer ) ix = 0;
 	m_player[ix].m_chip -= m_BB / 2;				//	Small Blind
+	assert( m_player[ix].m_chip >= 0 );
 	m_bets[ix][0] = m_BB / 2;
 	if( ++ix >= m_nPlayer ) ix = 0;
-	m_player[ix].m_chip -= m_BB;		//	Big Blind
-	m_bets[ix][0] = m_BB;
+	int bb = min(m_player[ix].m_chip, m_bb);
+	m_player[ix].m_chip -= bb;		//	Big Blind
+	assert( m_player[ix].m_chip >= 0 );
+	m_bets[ix][0] = bb;
 	m_pot = m_BB + m_BB / 2;
 	m_call = m_BB;		//	現在のトータルコール額
 }
@@ -300,6 +303,7 @@ void TexasHoldem::game()						//	1ゲームの処理
 						std::cout << "COM called.\n";
 					m_bets[ix][t] += toCall;
 					m_player[ix].m_chip -= toCall;
+					assert( m_player[ix].m_chip >= 0 );
 					m_pot += toCall;
 					if( lastRaisedIX < 0 ) lastRaisedIX = ix;
 					break;
@@ -313,6 +317,7 @@ void TexasHoldem::game()						//	1ゲームの処理
 						std::cout << "COM raised.\n";
 					m_bets[ix][t] += raise;
 					m_player[ix].m_chip -= raise;
+					assert( m_player[ix].m_chip >= 0 );
 					m_pot += raise;
 					m_call += raise;
 					lastRaisedIX = ix;
@@ -453,6 +458,7 @@ void TexasHoldem::addBet(int ix, int round, int b)
 void TexasHoldem::addBet(int ix, int b)	
 {
 	m_player[ix].m_chip -= b;
+	assert( m_player[ix].m_chip >= 0 );
 	m_bets[ix].push_back(b);
 	m_pot += b;
 	m_call = max(m_call, bet(ix));
