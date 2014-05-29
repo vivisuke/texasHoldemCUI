@@ -10,6 +10,8 @@ typedef unsigned int uint;
 
 TexasHoldem::TexasHoldem()
 {
+	std::random_device rnd;     // 非決定的な乱数生成器
+	//##m_mt.seed(rnd());		//	random_device の乱数でシードを初期化
 	initialize();
 }
 //	テーブルの初期化
@@ -40,7 +42,9 @@ void TexasHoldem::initForGame()
 //	ディーラをランダムに決める
 void TexasHoldem::setDealer()
 {
-	m_dealerIX = rand() % m_nPlayer;
+	std::uniform_int_distribution<> randCard(0, m_nPlayer - 1);
+	m_dealerIX = randCard(m_mt);
+	//m_dealerIX = rand() % m_nPlayer;
 }
 void TexasHoldem::dealHoleCards()			//	ホールカードを配る
 {

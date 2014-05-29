@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <random>
 #include "Deck.h"
 
 //----------------------------------------------------------------------
@@ -106,4 +107,6 @@ private:
 	std::vector<HoleCards>	m_holeCards;		//	各プレイヤーのホールカード
 	std::vector<Card>		m_communityCards;	//	コミュニティカード
 	std::vector<std::vector<int>>	m_bets;			//	各プレイヤーのラウンドごとのベット額
+	//std::random_device	m_rnd;     // 非決定的な乱数生成器
+	std::mt19937	m_mt ;
 };

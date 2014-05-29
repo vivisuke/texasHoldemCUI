@@ -741,6 +741,31 @@ void game()
 		setCursorPos(MENU_X, MENU_Y);
 		setColor(COL_GRAY, COL_BLACK);
 		bool folded = true;
+#if	1
+		vector<uint> odr(g_table.nPlayer());
+		vector<uint> hand(g_table.nPlayer());
+		std::vector<Card> v;
+		uint mx = 0;
+		int winIX;
+		for (int i = 0; i < g_table.nPlayer(); ++i) {
+			if( !g_table.folded(i) ) {
+				g_table.playersCard(i, v);
+				hand[i] = checkHand(v, odr[i]);
+				if( odr[i] > mx ) {
+					mx = odr[i];
+					winIX = i;
+				}
+			}
+		}
+		g_table.winner(winIX);
+		setCursorPos(MENU_X, MENU_Y);
+		setColor(COL_GRAY, COL_BLACK);
+		if( winIX == g_manIX ) {
+			cout << "+++ You win +++ (Push Enter Key)";
+		} else {
+			cout << "--- " << g_table.player(winIX).m_name << " win --- (Push Enter Key)";
+		}
+#else
 		if( g_table.folded(g_comIX) ) {
 			cout << "+++ You Win +++ (Push Enter Key)";
 			g_table.winner(g_manIX);
@@ -770,6 +795,7 @@ void game()
 #endif
 			print_result(odr);
 		}
+#endif
 		//draw_com(/*open:*/!folded);		//	‚Ç‚¿‚ç‚©‚ª~‚è‚½ê‡‚ÍŽèŽD‚ð‚³‚ç‚³‚È‚¢
 		int ch = getChar();
 		if( ch == 'p' )
