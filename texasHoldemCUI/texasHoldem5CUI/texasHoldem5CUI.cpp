@@ -792,6 +792,9 @@ bool round()
 }
 void animate_dealHoleCards()
 {
+	for (int i = 0; i < g_table.nPlayer(); ++i) {
+		show_act(playerPos[i].m_x, playerPos[i].m_y, "");
+	}
 	draw_table();
 	for (int i = 0; i <= N_PLAYER * 2; ++i) {
 		for (int ix = 0; ix < g_table.nPlayer(); ++ix) {
