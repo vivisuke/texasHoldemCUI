@@ -551,9 +551,9 @@ bool round()
 	}
 	//show_act(COM_X, COM_Y, "");
 	if( g_table.isAllIn() ) {
-		draw_player(g_comIX, COM_X, COM_Y);
-		//draw_com();
-		draw_human();
+		for (int ix = 0; ix < g_table.nPlayer(); ++ix) {
+			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/ix == g_manIX);
+		}
 		draw_table();
 		Sleep(500);
 		return true;
