@@ -747,10 +747,15 @@ bool round()
 		++pix;
 	}
 }
-void game()
+int game()
 {
 	g_table.setDealer();
-	while ( g_table.chip(g_manIX) != 0 && g_table.chip(g_comIX) != 0 ) {
+	//while ( g_table.chip(g_manIX) != 0 && g_table.chip(g_comIX) != 0 )
+	for(;;) {
+		for (int i = 0; i < g_table.nPlayer(); ++i) {
+			if( !g_table.chip(i) )
+				return i;
+		}
 		g_table.dealHoleCards();
 		if( round() ) {
 			//	‚Ü‚¾‚QlˆÈãŽc‚Á‚Ä‚¢‚éê‡
@@ -875,15 +880,17 @@ int main()
 	g_table.addPlayer(Player("COM4", 200, /*comp:*/true));
 	g_comIX = 1;
 	for (int g = 0;;++g) {
-		game();
+		int i = game();
 		if( g_table.chip(g_manIX) == 0 ) {
 			show_message("You Busted.");
-			g_table.setChip(g_manIX, 200);		//	ŽŸ‚ÌƒQ[ƒ€—p
 		} else {
 			show_message("Computer are Busted.");
-			g_table.setChip(g_comIX, 200);		//	ŽŸ‚ÌƒQ[ƒ€—p
 		}
-		cout << " Try Again ? [y/n]";
+		for (int i = 0; i < g_table.nPlayer(); ++i) {
+			if( !g_table.chip(i) )
+				g_table.setChip(i, 200);		//	ŽŸ‚ÌƒQ[ƒ€—p
+		}
+		cout << " continue ? [y/n]";
 		for (;;) {
 			int ch = getChar();
 			if( ch == 'n' || ch == 'N' )

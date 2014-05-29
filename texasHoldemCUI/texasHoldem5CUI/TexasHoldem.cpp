@@ -447,7 +447,7 @@ bool TexasHoldem::isAllIn() const		//	一人以外全員がオールインか？
 {
 	int n = 0;		//	チップを持っている人の数
 	for (int i = 0; i < m_nPlayer; ++i) {
-		if( m_player[i].m_chip != 0 )
+		if( !m_folded[i] && m_player[i].m_chip != 0 )
 			++n;
 	}
 	return n <= 1;
