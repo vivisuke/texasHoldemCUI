@@ -668,6 +668,44 @@ int human_act(int raiseUnit)
 	}
 	return act;
 }
+int com_act(int pix, int raiseUnit, int raiseCnt)
+{
+	int act;
+	int px = playerPos[pix].m_x;		//	手番のプレヤーの表示位置
+	int py = playerPos[pix].m_y;
+	Card c1, c2;
+	g_table.getHoleCards(pix, c1, c2);
+	double ws = calcWinSplitProb(c1, c2, g_table.communityCards(), N_PLAYER);
+	//show_message("WinSplit = ", 1);
+	//cout << ws*100 << "%";
+	int toCall = g_table.call() - g_table.bet(pix);	//	コール必要額
+	double th = calcThreshold(g_table.pot(), toCall);
+	if( !g_table.round() && th <= 0.5 )		//	プリフロップではあまりフォールドしない
+		th /= 2;
+	//Sleep(500);
+	if( ws < th && toCall != 0 ) {
+		act = ACT_FOLD;
+		show_act(px, py, "fold");
+	} else {
+		//int b = g_table.call() - g_table.bet(pix);		//	コール必要額
+		if( g_table.chip(pix) > toCall && ws >= 0.60 + 0.05 * raiseCnt ) {
+			int t = (int)((ws - 0.50)/0.05);
+			g_raiseMake = min(t * raiseUnit, g_table.chip(pix) - toCall);
+			act = ACT_RAISE;
+			std::string str("make ");
+			str += My::to_string(g_raiseMake);
+			show_act(px, py, str.c_str());
+			g_raiseMake += toCall;
+		} else {
+			act = ACT_CC;
+			if( !toCall )
+				show_act(px, py, "check");
+			else
+				show_act(px, py, "call");
+		}
+	}
+	return act;
+}
 //	プリフロップ、フロップ、ターン、リバーの処理
 //	全員コール：return true;
 //	一人以外全員降りたら：return false;
@@ -706,8 +744,8 @@ bool round()
 		int act = 0;
 		while( pix >= nPlayer )
 			pix -= nPlayer;
-		int px = playerPos[pix].m_x;		//	手番のプレヤーの表示位置
-		int py = playerPos[pix].m_y;
+		//int px = playerPos[pix].m_x;		//	手番のプレヤーの表示位置
+		//int py = playerPos[pix].m_y;
 		int raiseUnit = g_table.BB();		//	undone: 既にレイズされている場合はそれ以上
 		if( g_table.round() >= TexasHoldem::TURN )
 			raiseUnit *= 2;
@@ -720,37 +758,7 @@ bool round()
 			//act = ACT_CC;		//	for Test
 			act = human_act(raiseUnit);
 		} else {			//	コンピュータの手番
-			Card c1, c2;
-			g_table.getHoleCards(pix, c1, c2);
-			double ws = calcWinSplitProb(c1, c2, g_table.communityCards(), N_PLAYER);
-			//show_message("WinSplit = ", 1);
-			//cout << ws*100 << "%";
-			int call = g_table.call() - g_table.bet(pix);
-			double th = calcThreshold(g_table.pot(), call);
-			if( !g_table.round() && th <= 0.5 )		//	プリフロップではあまりフォールドしない
-				th /= 2;
-			//Sleep(500);
-			if( ws < th ) {
-				act = ACT_FOLD;
-				show_act(px, py, "fold");
-			} else {
-				int b = g_table.call() - g_table.bet(pix);		//	コール必要額
-				if( g_table.chip(pix) > b && ws >= 0.60 + 0.05 * raiseCnt ) {
-					int t = (int)((ws - 0.50)/0.05);
-					g_raiseMake = min(t * raiseUnit, g_table.chip(pix) - b);
-					act = ACT_RAISE;
-					std::string str("make ");
-					str += My::to_string(g_raiseMake);
-					show_act(px, py, str.c_str());
-					g_raiseMake += b;
-				} else {
-					act = ACT_CC;
-					if( !b )
-						show_act(px, py, "check");
-					else
-						show_act(px, py, "call");
-				}
-			}
+			act = com_act(pix, raiseUnit, raiseCnt);
 		}
 		done[pix] = true;
 		int b = min(g_table.call() - g_table.bet(pix), g_table.chip(pix));		//	必要コール額
