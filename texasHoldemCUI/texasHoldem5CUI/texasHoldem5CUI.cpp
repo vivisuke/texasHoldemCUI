@@ -515,7 +515,10 @@ void show_com_act(const char *act)
 //	一人以外全員降りたら：return false;
 bool round()
 {
-	show_act(COM_X, COM_Y, "");
+	for (int ix = 0; ix < g_table.nPlayer(); ++ix) {
+		show_act(playerPos[ix].m_x, playerPos[ix].m_y, "");
+	}
+	//show_act(COM_X, COM_Y, "");
 	if( g_table.isAllIn() ) {
 		draw_player(g_comIX, COM_X, COM_Y);
 		//draw_com();
