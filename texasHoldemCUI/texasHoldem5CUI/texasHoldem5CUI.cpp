@@ -549,6 +549,10 @@ bool round()
 		int raiseUnit = g_table.BB();		//	undone: Šù‚ÉƒŒƒCƒY‚³‚ê‚Ä‚¢‚éê‡‚Í‚»‚êˆÈã
 		if( g_table.round() >= TexasHoldem::TURN )
 			raiseUnit *= 2;
+		if( g_table.isFolded(pix) ) {
+			++pix;
+			continue;
+		}
 		if( pix == g_manIX ) {
 			g_raise = raiseUnit;
 			g_menuIX = MENU_CC;		//	Check/Call
