@@ -745,8 +745,10 @@ bool round()
 		switch( act ) {
 			case ACT_FOLD:
 				g_table.fold(pix);
-				if( g_table.nNotFoldPlayer() == 1 )
+				if( g_table.nNotFoldPlayer() == 1 ) {
+					draw_player(pix, playerPos[pix].m_x, playerPos[pix].m_y, pix == g_manIX);
 					return false;
+				}
 				break;
 			case ACT_CC: {
 				int b = min(g_table.call() - g_table.bet(pix), g_table.chip(pix));
@@ -771,7 +773,7 @@ bool round()
 		++pix;
 	}
 }
-void animate_dealHOleCards()
+void animate_dealHoleCards()
 {
 	draw_table();
 	for (int i = 0; i <= N_PLAYER * 2; ++i) {
@@ -781,8 +783,32 @@ void animate_dealHOleCards()
 			if( ix + N_PLAYER < i ) ++n;
 			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/false, /*nCard:*/n);
 		}
+		Sleep(250);
+	}
+}
+void animate_dealFlopCards()
+{
+	setColor(COL_BLACK, COL_CYAN);
+	for (int i = 0; i < 3; ++i) {
+		//draw_card(TABLE_X + 2 + i * 3, TABLE_Y + 2, cc[i]);
+		setCursorPos(TABLE_X + 2 + i * 3, TABLE_Y + 2);
+		cout << "  ";
 		Sleep(300);
 	}
+}
+void animate_dealTurnCards()
+{
+	setColor(COL_BLACK, COL_CYAN);
+	setCursorPos(TABLE_X + 2 + 3 * 3, TABLE_Y + 2);
+	cout << "  ";
+	Sleep(300);
+}
+void animate_dealRiverCards()
+{
+	setColor(COL_BLACK, COL_CYAN);
+	setCursorPos(TABLE_X + 2 + 4 * 3, TABLE_Y + 2);
+	cout << "  ";
+	Sleep(300);
 }
 int game()
 {
@@ -794,18 +820,20 @@ int game()
 				return i;
 		}
 		g_table.dealHoleCards();
-		animate_dealHOleCards();
+		animate_dealHoleCards();
 		if( round() ) {
 			//	‚Ü‚¾‚QlˆÈãŽc‚Á‚Ä‚¢‚éê‡
 			g_table.dealFlop();
+			animate_dealFlopCards();
 			if( round() ) {
 				//	‚Ü‚¾‚QlˆÈãŽc‚Á‚Ä‚¢‚éê‡
 				g_table.dealTurn();
+				animate_dealTurnCards();
 				if( round() ) {
 					//	‚Ü‚¾‚QlˆÈãŽc‚Á‚Ä‚¢‚éê‡
 					g_table.dealRiver();
-					//if( !g_table.isAllIn() )
-						round();
+					animate_dealRiverCards();
+					round();
 				}
 			}
 		}
