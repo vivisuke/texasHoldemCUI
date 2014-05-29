@@ -354,6 +354,8 @@ void draw_player(int ix, int x, int y, bool open = false)
 		setCursorPos(x+3, y+3);
 		cout << "  ";
 	}
+	if( g_table.folded(ix) )
+		show_act(x, y, "folded");
 }
 void draw_com(bool open = false)
 {
