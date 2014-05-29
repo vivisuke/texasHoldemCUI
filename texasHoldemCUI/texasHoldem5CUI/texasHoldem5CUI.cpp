@@ -325,7 +325,7 @@ void show_act(int x, int y, const char *act)
 void draw_player(int ix, int x, int y, bool open = false)
 {
 	setCursorPos(x, y);
-	setColor(COL_BLACK, COL_YELLOW);
+	setColor(COL_BLACK, g_table.folded(ix) ? COL_LIGHT_GRAY : COL_YELLOW);
 	cout << g_table.player(ix).m_name;
 	setColor(COL_GRAY, COL_BLACK);
 	if( ix == g_table.dealerIX() )
@@ -354,8 +354,8 @@ void draw_player(int ix, int x, int y, bool open = false)
 		setCursorPos(x+3, y+3);
 		cout << "  ";
 	}
-	if( g_table.folded(ix) )
-		show_act(x, y, "folded");
+	//if( g_table.folded(ix) )
+	//	show_act(x, y, "folded");
 }
 void draw_com(bool open = false)
 {
