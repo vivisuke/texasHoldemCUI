@@ -563,6 +563,7 @@ bool round()
 		if( g_table.round() >= TexasHoldem::TURN )
 			raiseUnit *= 2;
 		if( g_table.isFolded(pix) ) {
+			done[pix] = true;
 			++pix;
 			continue;
 		}
@@ -653,6 +654,7 @@ bool round()
 					act = ACT_RAISE;
 					break;
 			}
+			//done[pix] = true;
 		} else {
 			//	コンピュータの手番
 			Card c1, c2;
