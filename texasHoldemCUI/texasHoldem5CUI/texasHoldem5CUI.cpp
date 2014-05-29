@@ -123,6 +123,15 @@ namespace My {
 		}
 		return str;
 	}
+	std::string to_string(int v, int width)		//	width < 0 ‚Ìê‡‚Í¶‹l‚ß
+	{
+		std::string str = to_string(v);
+		if( width > 0 && width - str.size() > 0 )
+			str = std::string(width - str.size(), ' ') + str;
+		else if( width < 0 && -width - str.size() > 0 )
+			str += std::string(-width - str.size(), ' ');
+		return str;
+	}
 	std::string to_percent_string(double v)
 	{
 		int i = (int)(v * 100);
@@ -339,7 +348,10 @@ void show_act(int x, int y, const char *act)
 {
 	setColor(COL_GRAY, COL_BLACK);
 	setCursorPos(x, y + 4);
-	cout << act << "            ";
+	std::string str(act);
+	if( str.size() < 10 )
+		str += std::string(10 - str.size(), ' ');
+	cout << str;
 }
 void draw_player(int ix, int x, int y, bool open = false)
 {
@@ -356,11 +368,11 @@ void draw_player(int ix, int x, int y, bool open = false)
 	else
 		cout << "   ";
 	setCursorPos(x, y+1);
-	cout << "chip:" << g_table.chip(ix) << "    ";
+	cout << "chip:" << My::to_string(g_table.chip(ix), 4);
 	assert( g_table.chip(ix) >= 0 );
 	setCursorPos(x, y + 2);
 	if( g_table.pot() != 0 )
-		cout << "bet:" << g_table.bet(ix) << "      ";
+		cout << "bet:" << My::to_string(g_table.bet(ix), 5);
 	else
 		cout << "          ";
 	if( open ) {
@@ -868,6 +880,18 @@ int game()
 }
 int main()
 {
+#if	0
+	std::vector<Card> cm;
+	cm.push_back(Card(Card::DIAMONDS, Card::RANK_K));
+	cm.push_back(Card(Card::SPADES, Card::RANK_4));
+	cm.push_back(Card(Card::CLUBS, Card::RANK_A));
+	cm.push_back(Card(Card::DIAMONDS, Card::RANK_10));
+	cm.push_back(Card(Card::HERTS, Card::RANK_Q));
+	double ws = calcWinSplitProb(Card(Card::HERTS, Card::RANK_K),
+												Card(Card::HERTS, Card::RANK_10),
+												cm, 5);
+	cout << ws;
+#endif
 	setColor(COL_BLACK, COL_WHITE);
 	setCursorPos(5, 0);
 	cout << "*** Texas Hold'em Poker ***";

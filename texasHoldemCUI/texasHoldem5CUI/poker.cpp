@@ -237,6 +237,15 @@ void print(const std::vector<Card> v, uint odr)
 	}
 	std::cout << std::hex << odr << std::dec << "\n";
 }
+void print(const std::vector<Card> v, uint odr, const char *ptr)
+{
+	for (uint i = 0; i < v.size(); ++i) {
+		//std::cout << v[i].toString() << " ";
+		v[i].printW();
+		//std::cout << " ";
+	}
+	std::cout << std::hex << odr << std::dec << " " << ptr << "\n";
+}
 //----------------------------------------------------------------------
 //	ランダムハンドの相手一人に対する勝率（勝ち or 引き分け）を求める
 double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu)
@@ -300,6 +309,7 @@ double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu, int np)
 		deck.take(comu[k]);
 	int nWinSplit = 0;
 	const int NL = N_LOOP * 2 / np;
+	//const int NL = 10;
 	for (int i = 0; i < NL; ++i) {
 		deck.setNDealt(2+comu.size());		//	ディール済み枚数
 		deck.shuffle();
@@ -307,7 +317,9 @@ double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu, int np)
 			vv[0][j+2] = deck.deal();
 		}
 		uint odr0 = 0, odr = 0;
-		checkHand(vv[0], odr0);
+		int h = checkHand(vv[0], odr0);
+		//std::cout << "\n";
+		//print(vv[0], odr0, handName[h]);
 		//std::vector<uint> odr;
 		for (int k = 1; k < np; ++k) {
 			vv[k][0] = deck.deal();
@@ -315,14 +327,15 @@ double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu, int np)
 			for (int j = (int)comu.size(); j < 5; ++j) {
 				vv[k][j+2] = vv[0][j+2];
 			}
-			checkHand(vv[k], odr);
+			h = checkHand(vv[k], odr);
+			//print(vv[k], odr, handName[h]);
 			if( odr > odr0 )
 				break;
 		}
-		//print(v1, od1);
-		//print(v2, od2);
-		if( odr0 >= odr )
+		if( odr0 >= odr ) {
 			++nWinSplit;
+			//std::cout << "win\n";
+		}
 	}
 	return (double)nWinSplit / NL;
 }
