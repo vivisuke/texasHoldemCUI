@@ -128,7 +128,12 @@ int TexasHoldem::nNotFoldPlayer(int &ix) const
 //	多すぎるベットを元のプレイヤーに返す
 void TexasHoldem::backBets()
 {
-	int cmn = min(bet(0), bet(1));
+	int cmn = INT_MAX;
+	for (int i = 0; i < m_nPlayer; ++i) {
+		if( !m_folded[i] && bet(i) < cmn )
+			cmn = bet(i);
+	}
+	//int cmn = min(bet(0), bet(1));
 	for (int i = 0; i < m_nPlayer; ++i) {
 		if( !m_folded[i] ) {
 			int d = bet(i) - cmn;
