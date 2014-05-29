@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <algorithm>    // std::find
+#include <assert.h>
 
 using namespace std;
 
@@ -256,7 +257,7 @@ void clear_rightHalf()
 	}
 }
 //	各ターンでの vs ランダム勝率を表示
-void draw_winSplit_vsRand(int x, int y, Card c1, Card c2)
+void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 {
 	const std::vector<Card> &cc = g_table.communityCards();
 	std::vector<Card> v;
@@ -266,6 +267,9 @@ void draw_winSplit_vsRand(int x, int y, Card c1, Card c2)
 	cout << My::to_percent_string(ws);
 	draw_card(x, y, c1);
 	draw_card(x+3, y, c2);
+	setCursorPos(x + 7*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << g_table.bet(ix, 0) << "   ";
 	if( cc.size() < 3 ) return;
 	++y;
 	v.push_back(cc[0]);
@@ -273,37 +277,45 @@ void draw_winSplit_vsRand(int x, int y, Card c1, Card c2)
 	v.push_back(cc[2]);
 	ws = calcWinSplitProb(c1, c2, v, N_PLAYER);
 	setCursorPos(x - 6, y);
-	setColor(COL_GRAY, COL_BLACK);
 	cout << My::to_percent_string(ws);
 	draw_card(x, y, c1);
 	draw_card(x+3, y, c2);
 	for (int i = 0; i < (int)v.size(); ++i) {
 		draw_card(x+3*(i+2), y, v[i]);
 	}
+	setCursorPos(x + 7*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << g_table.bet(ix, 1) << "   ";
 	if( cc.size() < 4 ) return;
 	++y;
 	v.push_back(cc[3]);
 	ws = calcWinSplitProb(c1, c2, v, N_PLAYER);
 	setCursorPos(x - 6, y);
-	setColor(COL_GRAY, COL_BLACK);
+	//setColor(COL_GRAY, COL_BLACK);
 	cout << My::to_percent_string(ws);
 	draw_card(x, y, c1);
 	draw_card(x+3, y, c2);
 	for (int i = 0; i < (int)v.size(); ++i) {
 		draw_card(x+3*(i+2), y, v[i]);
 	}
+	setCursorPos(x + 7*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << g_table.bet(ix, 2) << "   ";
 	if( cc.size() < 5 ) return;
 	++y;
 	v.push_back(cc[4]);
 	ws = calcWinSplitProb(c1, c2, v, N_PLAYER);
 	setCursorPos(x - 6, y);
-	setColor(COL_GRAY, COL_BLACK);
+	//setColor(COL_GRAY, COL_BLACK);
 	cout << My::to_percent_string(ws);
 	draw_card(x, y, c1);
 	draw_card(x+3, y, c2);
 	for (int i = 0; i < (int)v.size(); ++i) {
 		draw_card(x+3*(i+2), y, v[i]);
 	}
+	setCursorPos(x + 7*3, y);
+	setColor(COL_GRAY, COL_BLACK);
+	cout << g_table.bet(ix, 3) << "   ";
 }
 void draw_winSplit_vsRand()
 {
@@ -314,7 +326,7 @@ void draw_winSplit_vsRand()
 #if	1
 	for (int i = 0; i < N_PLAYER; ++i, y+=5) {
 		g_table.getHoleCards(i, c1, c2);
-		draw_winSplit_vsRand(x, y, c1, c2);
+		draw_winSplit_vsRand(i, x, y, c1, c2);
 	}
 #else
 	g_table.getHoleCards(g_comIX, c1, c2);
@@ -345,7 +357,7 @@ void draw_player(int ix, int x, int y, bool open = false)
 		cout << "   ";
 	setCursorPos(x, y+1);
 	cout << "chip:" << g_table.chip(ix) << "    ";
-		setCursorPos(x - 2, y);
+	assert( g_table.chip(ix) >= 0 );
 	setCursorPos(x, y + 2);
 	if( g_table.pot() != 0 )
 		cout << "bet:" << g_table.bet(ix) << "      ";
@@ -680,15 +692,17 @@ bool round()
 			//cout << ws*100 << "%";
 			int call = g_table.call() - g_table.bet(pix);
 			double th = calcThreshold(g_table.pot(), call);
+			if( !g_table.round() && th <= 0.5 )		//	プリフロップではあまりフォールドしない
+				th /= 2;
 			//Sleep(500);
 			if( ws < th ) {
 				act = ACT_FOLD;
 				show_act(px, py, "fold");
 			} else {
 				int b = g_table.call() - g_table.bet(pix);		//	コール必要額
-				if( /*!b &&*/ ws >= 0.60 + 0.05 * raiseCnt ) {
+				if( g_table.chip(pix) > b && ws >= 0.60 + 0.05 * raiseCnt ) {
 					int t = (int)((ws - 0.50)/0.05);
-					g_raise = min(t * raiseUnit, g_table.chip(pix));
+					g_raise = min(t * raiseUnit, g_table.chip(pix) - b);
 					act = ACT_RAISE;
 					std::string str("raise ");
 					str += My::to_string(g_raise);
@@ -860,7 +874,7 @@ int main()
 	g_table.addPlayer(Player("COM3", 200, /*comp:*/true));
 	g_table.addPlayer(Player("COM4", 200, /*comp:*/true));
 	g_comIX = 1;
-	for (;;) {
+	for (int g = 0;;++g) {
 		game();
 		if( g_table.chip(g_manIX) == 0 ) {
 			show_message("You Busted.");

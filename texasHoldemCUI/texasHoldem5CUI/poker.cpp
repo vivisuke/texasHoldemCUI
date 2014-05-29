@@ -299,7 +299,7 @@ double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu, int np)
 	for (int k = 0; k < (int)comu.size(); ++k)
 		deck.take(comu[k]);
 	int nWinSplit = 0;
-	const int NL = N_LOOP / np;
+	const int NL = N_LOOP * 2 / np;
 	for (int i = 0; i < NL; ++i) {
 		deck.setNDealt(2+comu.size());		//	ディール済み枚数
 		deck.shuffle();
