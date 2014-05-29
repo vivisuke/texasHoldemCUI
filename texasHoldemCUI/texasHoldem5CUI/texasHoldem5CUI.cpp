@@ -353,7 +353,9 @@ void show_act(int x, int y, const char *act)
 		str += std::string(10 - str.size(), ' ');
 	cout << str;
 }
-void draw_player(int ix, int x, int y, bool open = false)
+void draw_player(int ix, int x, int y,
+							bool open = false,		//	カードオープン
+							int nCard = 2)			//	カード表示枚数
 {
 	setCursorPos(x, y);
 	setColor(COL_BLACK, g_table.folded(ix) ? COL_LIGHT_GRAY : COL_YELLOW);
@@ -375,17 +377,30 @@ void draw_player(int ix, int x, int y, bool open = false)
 		cout << "bet:" << My::to_string(g_table.bet(ix), 5);
 	else
 		cout << "          ";
-	if( open ) {
-		Card c1, c2;
-		g_table.getHoleCards(ix, c1, c2);
-		draw_card(x, y+3, c1);
-		draw_card(x+3, y+3, c2);
-	} else {
-		setColor(COL_BLACK, COL_CYAN);
+	//if( !nCard ) {
+		setColor(COL_BLACK, COL_BLACK);
 		setCursorPos(x, y+3);
 		cout << "  ";
 		setCursorPos(x+3, y+3);
 		cout << "  ";
+	//}
+	if( open ) {
+		Card c1, c2;
+		g_table.getHoleCards(ix, c1, c2);
+		if( nCard >= 1 )
+			draw_card(x, y+3, c1);
+		if( nCard >= 2 )
+			draw_card(x+3, y+3, c2);
+	} else {
+		setColor(COL_BLACK, COL_CYAN);
+		if( nCard >= 1 ) {
+			setCursorPos(x, y+3);
+			cout << "  ";
+		}
+		if( nCard >= 2 ) {
+			setCursorPos(x+3, y+3);
+			cout << "  ";
+		}
 	}
 	//if( g_table.folded(ix) )
 	//	show_act(x, y, "folded");
@@ -586,9 +601,6 @@ bool round()
 			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/ix == g_manIX);
 			//draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/true);		//	for Debug
 		}
-		//draw_player(g_comIX, COM_X, COM_Y);
-		//draw_com();
-		//draw_human();
 		draw_table();
 		int act = 0;
 		while( pix >= nPlayer )
@@ -759,6 +771,19 @@ bool round()
 		++pix;
 	}
 }
+void animate_dealHOleCards()
+{
+	draw_table();
+	for (int i = 0; i <= N_PLAYER * 2; ++i) {
+		for (int ix = 0; ix < g_table.nPlayer(); ++ix) {
+			int n = 0;
+			if( ix < i ) ++n;
+			if( ix + N_PLAYER < i ) ++n;
+			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/false, /*nCard:*/n);
+		}
+		Sleep(300);
+	}
+}
 int game()
 {
 	g_table.setDealer();
@@ -769,6 +794,7 @@ int game()
 				return i;
 		}
 		g_table.dealHoleCards();
+		animate_dealHOleCards();
 		if( round() ) {
 			//	まだ２人以上残っている場合
 			g_table.dealFlop();
