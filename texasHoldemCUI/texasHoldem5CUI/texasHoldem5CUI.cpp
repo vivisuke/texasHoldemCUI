@@ -579,7 +579,10 @@ bool round()
 			++pix;
 			continue;
 		}
-		if( pix == g_manIX ) {
+		if( pix == g_manIX ) {		//	人間の手番
+#if	0
+			act = ACT_CC;		//	for Test
+#else
 			g_raise = raiseUnit;
 			g_menuIX = MENU_CC;		//	Check/Call
 			int chip = g_table.chip(g_manIX);
@@ -667,6 +670,7 @@ bool round()
 					break;
 			}
 			//done[pix] = true;
+#endif
 		} else {
 			//	コンピュータの手番
 			Card c1, c2;
@@ -754,20 +758,24 @@ void game()
 		setColor(COL_GRAY, COL_BLACK);
 		bool folded = true;
 #if	1
-		vector<uint> odr(g_table.nPlayer());
-		vector<uint> hand(g_table.nPlayer());
-		std::vector<Card> v;
-		uint mx = 0;
 		int winIX;
-		for (int i = 0; i < g_table.nPlayer(); ++i) {
-			draw_player(i, playerPos[i].m_x, playerPos[i].m_y, !g_table.folded(i));
-			if( !g_table.folded(i) ) {
-				g_table.playersCard(i, v);
-				hand[i] = checkHand(v, odr[i]);
-				show_act(playerPos[i].m_x, playerPos[i].m_y, shortHandName[hand[i]]);
-				if( odr[i] > mx ) {
-					mx = odr[i];
-					winIX = i;
+		if( g_table.nNotFoldPlayer(winIX) == 1 ) {
+			//	done: 一人以外全員が降りた場合
+		} else {
+			vector<uint> odr(g_table.nPlayer());
+			vector<uint> hand(g_table.nPlayer());
+			std::vector<Card> v;
+			uint mx = 0;
+			for (int i = 0; i < g_table.nPlayer(); ++i) {
+				draw_player(i, playerPos[i].m_x, playerPos[i].m_y, !g_table.folded(i));
+				if( !g_table.folded(i) ) {
+					g_table.playersCard(i, v);
+					hand[i] = checkHand(v, odr[i]);
+					show_act(playerPos[i].m_x, playerPos[i].m_y, shortHandName[hand[i]]);
+					if( odr[i] > mx ) {
+						mx = odr[i];
+						winIX = i;
+					}
 				}
 			}
 		}

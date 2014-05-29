@@ -4,9 +4,9 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-ACT_CC	.\texasHoldem5CUI.cpp	76;"	d	file:
-ACT_FOLD	.\texasHoldem5CUI.cpp	75;"	d	file:
-ACT_RAISE	.\texasHoldem5CUI.cpp	77;"	d	file:
+ACT_CC	.\texasHoldem5CUI.cpp	77;"	d	file:
+ACT_FOLD	.\texasHoldem5CUI.cpp	76;"	d	file:
+ACT_RAISE	.\texasHoldem5CUI.cpp	78;"	d	file:
 BB	.\TexasHoldem.h	/^	int	BB() const { return m_BB; }$/;"	f	class:TexasHoldem
 BBIX	.\TexasHoldem.cpp	/^int TexasHoldem::BBIX() const$/;"	f	class:TexasHoldem
 CALLED	.\TexasHoldem.h	/^		CALLED,$/;"	e	enum:TexasHoldem::__anon2
@@ -32,12 +32,12 @@ COL_RED_MASK	.\consoleUtil.h	28;"	d
 COL_VIOLET	.\consoleUtil.h	24;"	d
 COL_WHITE	.\consoleUtil.h	26;"	d
 COL_YELLOW	.\consoleUtil.h	25;"	d
-COM_BET_X	.\texasHoldem5CUI.cpp	51;"	d	file:
-COM_BET_Y	.\texasHoldem5CUI.cpp	52;"	d	file:
-COM_X	.\texasHoldem5CUI.cpp	49;"	d	file:
-COM_Y	.\texasHoldem5CUI.cpp	50;"	d	file:
-CONS_HT	.\texasHoldem5CUI.cpp	42;"	d	file:
-CONS_WD	.\texasHoldem5CUI.cpp	41;"	d	file:
+COM_BET_X	.\texasHoldem5CUI.cpp	52;"	d	file:
+COM_BET_Y	.\texasHoldem5CUI.cpp	53;"	d	file:
+COM_X	.\texasHoldem5CUI.cpp	50;"	d	file:
+COM_Y	.\texasHoldem5CUI.cpp	51;"	d	file:
+CONS_HT	.\texasHoldem5CUI.cpp	43;"	d	file:
+CONS_WD	.\texasHoldem5CUI.cpp	42;"	d	file:
 Card	.\Deck.h	/^	Card(char suit = 0, char rank = 0) : m_suit(suit), m_rank(rank) {}$/;"	f	struct:Card
 Card	.\Deck.h	/^struct Card$/;"	s
 CurPos	.\texasHoldem5CUI.cpp	/^struct CurPos {$/;"	s	file:
@@ -49,37 +49,38 @@ FLUSH	.\poker.h	/^	FLUSH,$/;"	e	enum:__anon1
 FOLD	.\TexasHoldem.h	/^		FOLD,$/;"	e	enum:TexasHoldem::__anon2
 FOUR_OF_A_KIND	.\poker.h	/^	FOUR_OF_A_KIND,$/;"	e	enum:__anon1
 FULL_HOUSE	.\poker.h	/^	FULL_HOUSE,$/;"	e	enum:__anon1
-HAND_HELP_X	.\texasHoldem5CUI.cpp	66;"	d	file:
-HAND_HELP_Y	.\texasHoldem5CUI.cpp	67;"	d	file:
+HAND_HELP_X	.\texasHoldem5CUI.cpp	67;"	d	file:
+HAND_HELP_Y	.\texasHoldem5CUI.cpp	68;"	d	file:
 HERTS	.\Deck.h	/^		HERTS,$/;"	e	enum:Card::Suit
 HIGH_CARD	.\poker.h	/^	HIGH_CARD = 0,$/;"	e	enum:__anon1
 HoleCards	.\TexasHoldem.h	/^typedef std::pair<Card, Card> HoleCards;$/;"	t
-KEY_DOWN	.\texasHoldem5CUI.cpp	74;"	d	file:
-KEY_LEFT	.\texasHoldem5CUI.cpp	71;"	d	file:
-KEY_RIGHT	.\texasHoldem5CUI.cpp	72;"	d	file:
-KEY_SPECIAL	.\texasHoldem5CUI.cpp	70;"	d	file:
-KEY_UP	.\texasHoldem5CUI.cpp	73;"	d	file:
-MAN_BET_X	.\texasHoldem5CUI.cpp	55;"	d	file:
-MAN_BET_Y	.\texasHoldem5CUI.cpp	56;"	d	file:
-MAN_X	.\texasHoldem5CUI.cpp	53;"	d	file:
-MAN_Y	.\texasHoldem5CUI.cpp	54;"	d	file:
-MENU_ALLIN	.\texasHoldem5CUI.cpp	65;"	d	file:
-MENU_CC	.\texasHoldem5CUI.cpp	63;"	d	file:
-MENU_FOLD	.\texasHoldem5CUI.cpp	62;"	d	file:
-MENU_RAISE	.\texasHoldem5CUI.cpp	64;"	d	file:
-MENU_X	.\texasHoldem5CUI.cpp	59;"	d	file:
-MENU_Y	.\texasHoldem5CUI.cpp	60;"	d	file:
+KEY_DOWN	.\texasHoldem5CUI.cpp	75;"	d	file:
+KEY_LEFT	.\texasHoldem5CUI.cpp	72;"	d	file:
+KEY_RIGHT	.\texasHoldem5CUI.cpp	73;"	d	file:
+KEY_SPECIAL	.\texasHoldem5CUI.cpp	71;"	d	file:
+KEY_UP	.\texasHoldem5CUI.cpp	74;"	d	file:
+MAN_BET_X	.\texasHoldem5CUI.cpp	56;"	d	file:
+MAN_BET_Y	.\texasHoldem5CUI.cpp	57;"	d	file:
+MAN_X	.\texasHoldem5CUI.cpp	54;"	d	file:
+MAN_Y	.\texasHoldem5CUI.cpp	55;"	d	file:
+MENU_ALLIN	.\texasHoldem5CUI.cpp	66;"	d	file:
+MENU_CC	.\texasHoldem5CUI.cpp	64;"	d	file:
+MENU_FOLD	.\texasHoldem5CUI.cpp	63;"	d	file:
+MENU_RAISE	.\texasHoldem5CUI.cpp	65;"	d	file:
+MENU_X	.\texasHoldem5CUI.cpp	60;"	d	file:
+MENU_Y	.\texasHoldem5CUI.cpp	61;"	d	file:
 My	.\texasHoldem5CUI.cpp	/^namespace My {$/;"	n	file:
 N_CARD	.\Deck.h	/^		N_CARD = N_SUIT * N_RANK,			\/\/	ÂÖ®„Ç´„Éº„ÉâÊûöÊï∞$/;"	e	enum:Card::Suit
 N_KIND_HAND	.\poker.h	/^	N_KIND_HAND,$/;"	e	enum:__anon1
-N_MENU	.\texasHoldem5CUI.cpp	61;"	d	file:
+N_MENU	.\texasHoldem5CUI.cpp	62;"	d	file:
+N_PLAYER	.\texasHoldem5CUI.cpp	41;"	d	file:
 N_RANK	.\Deck.h	/^		N_RANK,$/;"	e	enum:Card::Suit
 N_SUIT	.\Deck.h	/^		N_SUIT,$/;"	e	enum:Card::Suit
 ONE_PAIR	.\poker.h	/^	ONE_PAIR,$/;"	e	enum:__anon1
-PLAYER_HT	.\texasHoldem5CUI.cpp	47;"	d	file:
-PLAYER_WD	.\texasHoldem5CUI.cpp	48;"	d	file:
-POT_X	.\texasHoldem5CUI.cpp	57;"	d	file:
-POT_Y	.\texasHoldem5CUI.cpp	58;"	d	file:
+PLAYER_HT	.\texasHoldem5CUI.cpp	48;"	d	file:
+PLAYER_WD	.\texasHoldem5CUI.cpp	49;"	d	file:
+POT_X	.\texasHoldem5CUI.cpp	58;"	d	file:
+POT_Y	.\texasHoldem5CUI.cpp	59;"	d	file:
 PRE_FLOP	.\TexasHoldem.h	/^		PRE_FLOP = 0,$/;"	e	enum:TexasHoldem::__anon2
 Player	.\TexasHoldem.h	/^	Player(const Player &x)$/;"	f	struct:Player
 Player	.\TexasHoldem.h	/^	Player(const std::string &name, int chip, short computer = 0)$/;"	f	struct:Player
@@ -104,18 +105,18 @@ SPADES	.\Deck.h	/^		SPADES = 0,$/;"	e	enum:Card::Suit
 STRAIGHT	.\poker.h	/^	STRAIGHT,$/;"	e	enum:__anon1
 STRAIGHT_FLUSH	.\poker.h	/^	STRAIGHT_FLUSH,$/;"	e	enum:__anon1
 Suit	.\Deck.h	/^	enum Suit {$/;"	g	struct:Card
-TABLE_HT	.\texasHoldem5CUI.cpp	45;"	d	file:
-TABLE_WD	.\texasHoldem5CUI.cpp	46;"	d	file:
-TABLE_X	.\texasHoldem5CUI.cpp	43;"	d	file:
-TABLE_Y	.\texasHoldem5CUI.cpp	44;"	d	file:
+TABLE_HT	.\texasHoldem5CUI.cpp	46;"	d	file:
+TABLE_WD	.\texasHoldem5CUI.cpp	47;"	d	file:
+TABLE_X	.\texasHoldem5CUI.cpp	44;"	d	file:
+TABLE_Y	.\texasHoldem5CUI.cpp	45;"	d	file:
 THREE_OF_A_KIND	.\poker.h	/^	THREE_OF_A_KIND,$/;"	e	enum:__anon1
 TURN	.\TexasHoldem.h	/^		TURN,$/;"	e	enum:TexasHoldem::__anon2
 TWO_PAIR	.\poker.h	/^	TWO_PAIR,$/;"	e	enum:__anon1
 TexasHoldem	.\TexasHoldem.cpp	/^TexasHoldem::TexasHoldem()$/;"	f	class:TexasHoldem
 TexasHoldem	.\TexasHoldem.h	/^class TexasHoldem$/;"	c
 UNKNOWN	.\TexasHoldem.h	/^		UNKNOWN = 0,$/;"	e	enum:TexasHoldem::__anon2
-VS_RAND_X	.\texasHoldem5CUI.cpp	68;"	d	file:
-VS_RAND_Y	.\texasHoldem5CUI.cpp	69;"	d	file:
+VS_RAND_X	.\texasHoldem5CUI.cpp	69;"	d	file:
+VS_RAND_Y	.\texasHoldem5CUI.cpp	70;"	d	file:
 action	.\TexasHoldem.cpp	/^int TexasHoldem::action(int ix)$/;"	f	class:TexasHoldem
 addBet	.\TexasHoldem.cpp	/^void TexasHoldem::addBet(int ix, int b)		\/\/	ÉxÉbÉg\/ÉRÅ[ÉãÇçsÇ§$/;"	f	class:TexasHoldem
 addPlayer	.\TexasHoldem.cpp	/^int TexasHoldem::addPlayer(const Player &p)$/;"	f	class:TexasHoldem
@@ -125,6 +126,7 @@ bet	.\TexasHoldem.cpp	/^int TexasHoldem::bet(int ix) const$/;"	f	class:TexasHold
 bet	.\TexasHoldem.cpp	/^int TexasHoldem::bet(int ix, int round) const$/;"	f	class:TexasHoldem
 calcThreshold	.\poker.cpp	/^double calcThreshold(int pot, int call)$/;"	f
 calcWinSplitProb	.\poker.cpp	/^double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu)$/;"	f
+calcWinSplitProb	.\poker.cpp	/^double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu, int np)$/;"	f
 call	.\TexasHoldem.h	/^	int	call() const { return m_call; }		\/\/	ÉRÅ[ÉãÇ∑ÇÈÇÃÇ…ïKóvÇ»ÉgÅ[É^ÉãÉ`ÉbÉväz$/;"	f	class:TexasHoldem
 checkHand	.\poker.cpp	/^int checkHand(const std::vector<Card> &v)$/;"	f
 checkHand	.\poker.cpp	/^int checkHand(const std::vector<Card> v, uint &odr)$/;"	f
@@ -169,6 +171,7 @@ init	.\Deck.cpp	/^void Deck::init(bool shfl)$/;"	f	class:Deck
 initForGame	.\TexasHoldem.cpp	/^void TexasHoldem::initForGame()$/;"	f	class:TexasHoldem
 initialize	.\TexasHoldem.cpp	/^void TexasHoldem::initialize()$/;"	f	class:TexasHoldem
 isAllIn	.\TexasHoldem.cpp	/^bool TexasHoldem::isAllIn() const		\/\/	àÍêlà»äOëSàıÇ™ÉIÅ[ÉãÉCÉìÇ©ÅH$/;"	f	class:TexasHoldem
+isFolded	.\TexasHoldem.h	/^	bool	isFolded(int ix) const { return m_folded[ix]; }$/;"	f	class:TexasHoldem
 isKeyPressed	.\consoleUtil.cpp	/^bool isKeyPressed(int vKey)$/;"	f
 m_AI	.\TexasHoldem.h	/^	short		m_AI;		\/\/	AI type, 0 ÇÕêlä‘$/;"	m	struct:Player
 m_BB	.\TexasHoldem.h	/^	int	m_BB;				\/\/	big blind (sould be even)$/;"	m	class:TexasHoldem
@@ -183,6 +186,7 @@ m_folded	.\TexasHoldem.h	/^	std::vector<bool>		m_folded;		\/\/	FOLDçœÇ›$/;"	m	cl
 m_holeCards	.\TexasHoldem.h	/^	std::vector<HoleCards>	m_holeCards;		\/\/	äeÉvÉåÉCÉÑÅ[ÇÃÉzÅ[ÉãÉJÅ[Éh$/;"	m	class:TexasHoldem
 m_initBB	.\TexasHoldem.h	/^	int	m_initBB;			\/\/	BB èâä˙íl$/;"	m	class:TexasHoldem
 m_mt	.\Deck.h	/^	std::mt19937	m_mt;$/;"	m	class:Deck
+m_mt	.\TexasHoldem.h	/^	std::mt19937	m_mt ;$/;"	m	class:TexasHoldem
 m_nDealt	.\Deck.h	/^	int	m_nDealt;				\/\/	Êó¢„Å´ÈÖç„Çâ„Çå„ÅüÊûöÊï∞Ôºàm_card „ÅÆÊúÄÂàù„ÅÆ m_nDealt Êûö„ÅåÈÖç„Çâ„Çå„Å¶„ÅÑ„ÇãÔºâ$/;"	m	class:Deck
 m_nPlayer	.\TexasHoldem.h	/^	int	m_nPlayer;		\/\/	ÉeÅ[ÉuÉãÇÃêlêî$/;"	m	class:TexasHoldem
 m_name	.\TexasHoldem.h	/^	std::string	m_name;$/;"	m	struct:Player
@@ -196,6 +200,7 @@ m_x	.\texasHoldem5CUI.cpp	/^	int	m_x;$/;"	m	struct:CurPos	file:
 m_y	.\texasHoldem5CUI.cpp	/^	int m_y;$/;"	m	struct:CurPos	file:
 main	.\texasHoldem5CUI.cpp	/^int main()$/;"	f
 nDealt	.\Deck.h	/^	int	nDealt() const { return m_nDealt; }$/;"	f	class:Deck
+nNotFoldPlayer	.\TexasHoldem.cpp	/^int TexasHoldem::nNotFoldPlayer() const$/;"	f	class:TexasHoldem
 nPlayer	.\TexasHoldem.h	/^	int	nPlayer() const { return m_nPlayer; }$/;"	f	class:TexasHoldem
 nRest	.\Deck.h	/^	int	nRest() const { return Card::N_CARD - m_nDealt; }$/;"	f	class:Deck
 operator ==	.\Deck.h	/^	bool	operator==(const Card &x) const { return m_suit == x.m_suit && m_rank == x.m_rank; }$/;"	f	struct:Card

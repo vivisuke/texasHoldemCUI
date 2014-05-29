@@ -53,6 +53,7 @@ public:
 	void	printProb() const;
 	int	nPlayer() const { return m_nPlayer; }
 	int	nNotFoldPlayer() const;
+	int	nNotFoldPlayer(int &) const;
 	int	round() const { return m_round; }		//	ラウンド、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
 	int	BB() const { return m_BB; }
 	int	dealerIX() const { return m_dealerIX; }
