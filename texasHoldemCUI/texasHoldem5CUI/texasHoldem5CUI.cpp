@@ -311,10 +311,17 @@ void draw_winSplit_vsRand()
 	int x = VS_RAND_X;
 	int y = VS_RAND_Y;
 	Card c1, c2;
+#if	1
+	for (int i = 0; i < N_PLAYER; ++i, y+=5) {
+		g_table.getHoleCards(i, c1, c2);
+		draw_winSplit_vsRand(x, y, c1, c2);
+	}
+#else
 	g_table.getHoleCards(g_comIX, c1, c2);
 	draw_winSplit_vsRand(x, y, c1, c2);
 	g_table.getHoleCards(g_manIX, c1, c2);
 	draw_winSplit_vsRand(x, y+5, c1, c2);
+#endif
 }
 void show_act(int x, int y, const char *act)
 {
@@ -550,8 +557,8 @@ bool round()
 	int raiseCnt = 0;		//	ƒŒƒCƒY‰ñ”
 	for (;;) {
 		for (int ix = 0; ix < g_table.nPlayer(); ++ix) {
-			//draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/ix == g_manIX);
-			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/true);		//	for Debug
+			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/ix == g_manIX);
+			//draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/true);		//	for Debug
 		}
 		//draw_player(g_comIX, COM_X, COM_Y);
 		//draw_com();
@@ -751,15 +758,18 @@ void game()
 		uint mx = 0;
 		int winIX;
 		for (int i = 0; i < g_table.nPlayer(); ++i) {
+			draw_player(i, playerPos[i].m_x, playerPos[i].m_y, !g_table.folded(i));
 			if( !g_table.folded(i) ) {
 				g_table.playersCard(i, v);
 				hand[i] = checkHand(v, odr[i]);
+				show_act(playerPos[i].m_x, playerPos[i].m_y, shortHandName[hand[i]]);
 				if( odr[i] > mx ) {
 					mx = odr[i];
 					winIX = i;
 				}
 			}
 		}
+		draw_table();
 		g_table.winner(winIX);
 		setCursorPos(MENU_X, MENU_Y);
 		setColor(COL_GRAY, COL_BLACK);
@@ -804,9 +814,15 @@ void game()
 		if( ch == 'p' )
 			draw_winSplit_vsRand();
 		clear_menu();
+#if	1
+		for (int i = 0; i < N_PLAYER; ++i) {
+			draw_player(i, playerPos[i].m_x, playerPos[i].m_y, !g_table.folded(i));
+		}
+#else
 		draw_player(g_comIX, COM_X, COM_Y, /*open:*/!folded);
 		//draw_com(/*open:*/!folded);		//	‚Ç‚¿‚ç‚©‚ª~‚è‚½ê‡‚ÍŽèŽD‚ð‚³‚ç‚³‚È‚¢
 		draw_human();
+#endif
 		draw_table();
 		show_message("Push Enter Key");
 		getChar();
