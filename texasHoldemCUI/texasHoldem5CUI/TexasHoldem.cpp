@@ -56,11 +56,12 @@ void TexasHoldem::dealHoleCards()			//	ホールカードを配る
 	}
 	int ix = m_dealerIX + 1;
 	if( ix >= m_nPlayer ) ix = 0;
-	m_player[ix].m_chip -= m_BB / 2;				//	Small Blind
+	int sb = min(m_player[ix].m_chip, m_BB/2);
+	m_player[ix].m_chip -= sb;				//	Small Blind
 	assert( m_player[ix].m_chip >= 0 );
-	m_bets[ix][0] = m_BB / 2;
+	m_bets[ix][0] = sb;
 	if( ++ix >= m_nPlayer ) ix = 0;
-	int bb = min(m_player[ix].m_chip, m_bb);
+	int bb = min(m_player[ix].m_chip, m_BB);
 	m_player[ix].m_chip -= bb;		//	Big Blind
 	assert( m_player[ix].m_chip >= 0 );
 	m_bets[ix][0] = bb;
