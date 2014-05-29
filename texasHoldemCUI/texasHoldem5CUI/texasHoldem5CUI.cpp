@@ -67,7 +67,7 @@ using namespace std;
 #define		MENU_ALLIN	3
 #define		HAND_HELP_X		(CONS_WD/2+8)
 #define		HAND_HELP_Y		1
-#define		VS_RAND_X			(CONS_WD/2+8)
+#define		VS_RAND_X			(CONS_WD/2+8+4)
 #define		VS_RAND_Y			1
 #define		KEY_SPECIAL	0xe0
 #define		KEY_LEFT		0x4b
