@@ -38,6 +38,7 @@ using namespace std;
 └────────────────────────┘
 */
 
+#define		N_PLAYER		5
 #define		CONS_WD		80
 #define		CONS_HT		25
 #define		TABLE_X		10
@@ -259,7 +260,7 @@ void draw_winSplit_vsRand(int x, int y, Card c1, Card c2)
 {
 	const std::vector<Card> &cc = g_table.communityCards();
 	std::vector<Card> v;
-	double ws = calcWinSplitProb(c1, c2, v);
+	double ws = calcWinSplitProb(c1, c2, v, N_PLAYER);
 	setCursorPos(x - 6, y);
 	setColor(COL_GRAY, COL_BLACK);
 	cout << My::to_percent_string(ws);
@@ -270,7 +271,7 @@ void draw_winSplit_vsRand(int x, int y, Card c1, Card c2)
 	v.push_back(cc[0]);
 	v.push_back(cc[1]);
 	v.push_back(cc[2]);
-	ws = calcWinSplitProb(c1, c2, v);
+	ws = calcWinSplitProb(c1, c2, v, N_PLAYER);
 	setCursorPos(x - 6, y);
 	setColor(COL_GRAY, COL_BLACK);
 	cout << My::to_percent_string(ws);
@@ -282,7 +283,7 @@ void draw_winSplit_vsRand(int x, int y, Card c1, Card c2)
 	if( cc.size() < 4 ) return;
 	++y;
 	v.push_back(cc[3]);
-	ws = calcWinSplitProb(c1, c2, v);
+	ws = calcWinSplitProb(c1, c2, v, N_PLAYER);
 	setCursorPos(x - 6, y);
 	setColor(COL_GRAY, COL_BLACK);
 	cout << My::to_percent_string(ws);
@@ -294,7 +295,7 @@ void draw_winSplit_vsRand(int x, int y, Card c1, Card c2)
 	if( cc.size() < 5 ) return;
 	++y;
 	v.push_back(cc[4]);
-	ws = calcWinSplitProb(c1, c2, v);
+	ws = calcWinSplitProb(c1, c2, v, N_PLAYER);
 	setCursorPos(x - 6, y);
 	setColor(COL_GRAY, COL_BLACK);
 	cout << My::to_percent_string(ws);
@@ -631,7 +632,7 @@ bool round()
 					//	確率・スレッシュホールド表示
 					Card c1, c2;
 					g_table.getHoleCards(g_manIX, c1, c2);
-					double ws = calcWinSplitProb(c1, c2, g_table.communityCards());
+					double ws = calcWinSplitProb(c1, c2, g_table.communityCards(), N_PLAYER);
 					show_message("WinSplit = ", 1);
 					cout << ws*100 << "%";
 					int call = g_table.call() - g_table.bet(pix);
@@ -659,7 +660,7 @@ bool round()
 			//	コンピュータの手番
 			Card c1, c2;
 			g_table.getHoleCards(pix, c1, c2);
-			double ws = calcWinSplitProb(c1, c2, g_table.communityCards());
+			double ws = calcWinSplitProb(c1, c2, g_table.communityCards(), N_PLAYER);
 			//show_message("WinSplit = ", 1);
 			//cout << ws*100 << "%";
 			int call = g_table.call() - g_table.bet(pix);

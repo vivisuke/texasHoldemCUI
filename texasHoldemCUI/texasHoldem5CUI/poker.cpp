@@ -276,6 +276,56 @@ double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu)
 	}
 	return (double)nWinSplit / N_LOOP;
 }
+//	ランダムハンドの相手 np - 1人に対する勝率（勝ち or 引き分け）を求める
+double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu, int np)
+{
+	assert( comu.size() <= 5 );
+	const int N_LOOP = 10000;
+	std::vector<std::vector<Card>> vv;
+	for (int i = 0; i < np; ++i) {
+		vv.push_back(std::vector<Card>(7));
+	}
+	vv[0][0] = c1;
+	vv[0][1] = c2;
+	for (int k = 0; k < np; ++k) {
+		for (int i = 0; i < (int)comu.size(); ++i) {
+			vv[k][i+2] = comu[i];
+		}
+	}
+	Deck deck;
+	//	take は O(N) の時間がかかるので、ループの前に処理を行っておく
+	deck.take(c1);
+	deck.take(c2);
+	for (int k = 0; k < (int)comu.size(); ++k)
+		deck.take(comu[k]);
+	int nWinSplit = 0;
+	const int NL = N_LOOP / np;
+	for (int i = 0; i < NL; ++i) {
+		deck.setNDealt(2+comu.size());		//	ディール済み枚数
+		deck.shuffle();
+		for (int j = (int)comu.size(); j < 5; ++j) {
+			vv[0][j+2] = deck.deal();
+		}
+		uint odr0 = 0, odr = 0;
+		checkHand(vv[0], odr0);
+		//std::vector<uint> odr;
+		for (int k = 1; k < np; ++k) {
+			vv[k][0] = deck.deal();
+			vv[k][1] = deck.deal();
+			for (int j = (int)comu.size(); j < 5; ++j) {
+				vv[k][j+2] = vv[0][j+2];
+			}
+			checkHand(vv[k], odr);
+			if( odr > odr0 )
+				break;
+		}
+		//print(v1, od1);
+		//print(v2, od2);
+		if( odr0 >= odr )
+			++nWinSplit;
+	}
+	return (double)nWinSplit / NL;
+}
 //	現状のレイズ・コールを含めたチップ合計が pot の時に、call するかどうかの勝率閾値を計算
 //	プレイヤー人数は合計２人とする
 double calcThreshold(int pot, int call)
