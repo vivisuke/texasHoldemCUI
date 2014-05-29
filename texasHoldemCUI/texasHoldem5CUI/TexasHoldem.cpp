@@ -118,9 +118,11 @@ void TexasHoldem::backBets()
 {
 	int cmn = min(bet(0), bet(1));
 	for (int i = 0; i < m_nPlayer; ++i) {
-		int d = bet(i) - cmn;
-		m_player[i].m_chip += d;
-		m_pot -= d;
+		if( !m_folded[i] ) {
+			int d = bet(i) - cmn;
+			m_player[i].m_chip += d;
+			m_pot -= d;
+		}
 	}
 }
 void TexasHoldem::winner(int ix)			//	ix ‚ª”ƒ‚Á‚½ê‡‚Ìˆ—
