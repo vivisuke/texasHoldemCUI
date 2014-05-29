@@ -535,16 +535,17 @@ bool round()
 	int lastRaise = 0;
 	for (;;) {
 		for (int ix = 0; ix < g_table.nPlayer(); ++ix) {
-			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y);
+			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/ix == g_manIX);
 		}
 		//draw_player(g_comIX, COM_X, COM_Y);
 		//draw_com();
 		//draw_human();
 		draw_table();
-		getchar();
 		int act = 0;
 		while( pix >= nPlayer )
 			pix -= nPlayer;
+		int px = playerPos[pix].m_x;		//	手番のプレヤーの表示位置
+		int py = playerPos[pix].m_y;
 		int raiseUnit = g_table.BB();		//	undone: 既にレイズされている場合はそれ以上
 		if( g_table.round() >= TexasHoldem::TURN )
 			raiseUnit *= 2;
@@ -621,7 +622,7 @@ bool round()
 				}
 			}
 			clear_menu();
-			clear_menu(1);
+			clear_menu(1);	//	メニューの次の行も消去
 			switch( g_menuIX ) {
 				case MENU_FOLD:
 					act = ACT_FOLD;
@@ -647,7 +648,7 @@ bool round()
 			//Sleep(500);
 			if( ws < th ) {
 				act = ACT_FOLD;
-				show_act(COM_X, COM_Y, "fold");
+				show_act(px, py, "fold");
 			} else {
 				int b = g_table.call() - g_table.bet(pix);		//	コール必要額
 				if( !b && ws >= 0.55 ) {
@@ -656,13 +657,13 @@ bool round()
 					act = ACT_RAISE;
 					std::string str("raise ");
 					str += My::to_string(g_raise);
-					show_act(COM_X, COM_Y, str.c_str());
+					show_act(px, py, str.c_str());
 				} else {
 					act = ACT_CC;
 					if( !b )
-						show_act(COM_X, COM_Y, "check");
+						show_act(px, py, "check");
 					else
-						show_act(COM_X, COM_Y, "call");
+						show_act(px, py, "call");
 				}
 			}
 		}
@@ -670,7 +671,9 @@ bool round()
 		switch( act ) {
 			case ACT_FOLD:
 				g_table.fold(pix);
-				return false;
+				if( g_table.nNotFoldPlayer() == 1 )
+					return false;
+				break;
 			case ACT_CC: {
 				int b = min(g_table.call() - g_table.bet(pix), g_table.chip(pix));
 				if( b != 0 ) {
@@ -682,9 +685,9 @@ bool round()
 				g_table.addBet(pix, g_raise);
 				break;
 		}
-		draw_player(g_comIX, COM_X, COM_Y);
+		draw_player(pix, playerPos[pix].m_x, playerPos[pix].m_y, pix == g_manIX);
 		//draw_com();
-		draw_human();
+		//draw_human();
 		if( (g_table.allCalled() /*|| g_table.isAllIn()*/)
 			&& std::find(done.begin(), done.end(), false) == done.end() )
 		{

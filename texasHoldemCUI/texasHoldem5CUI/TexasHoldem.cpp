@@ -100,6 +100,15 @@ void TexasHoldem::fold(int ix)
 {
 	m_folded[ix] = true;
 }
+//	フォールドしていないプレイヤー人数を返す
+int TexasHoldem::nNotFoldPlayer() const
+{
+	int cnt = 0;
+	for (int i = 0; i < (int)m_nPlayer; ++i) {
+		if( !m_folded[i] ) ++cnt;
+	}
+	return cnt;
+}
 //	多すぎるベットを元のプレイヤーに返す
 void TexasHoldem::backBets()
 {

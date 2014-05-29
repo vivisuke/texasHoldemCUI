@@ -51,6 +51,7 @@ public:
 	void	printPlayerChips() const;		//	プレイヤーのチップのみ表示
 	void	printProb() const;
 	int	nPlayer() const { return m_nPlayer; }
+	int	nNotFoldPlayer() const;
 	int	round() const { return m_round; }		//	ラウンド、0:プリフロップ、1:フロップ、2:ターン, 3:リバー
 	int	BB() const { return m_BB; }
 	int	dealerIX() const { return m_dealerIX; }
