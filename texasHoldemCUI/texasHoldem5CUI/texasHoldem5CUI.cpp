@@ -336,11 +336,13 @@ void draw_player(int ix, int x, int y, bool open = false)
 	cout << g_table.player(ix).m_name;
 	setColor(COL_GRAY, COL_BLACK);
 	if( ix == g_table.dealerIX() )
-		cout << " D";
-	if( ix == g_table.BBIX() )
+		cout << " D ";
+	else if( ix == g_table.BBIX() )
 		cout << " BB";
-	if( ix == g_table.SBIX() )
+	else if( ix == g_table.SBIX() )
 		cout << " SB";
+	else
+		cout << "   ";
 	setCursorPos(x, y+1);
 	cout << "chip:" << g_table.chip(ix) << "    ";
 		setCursorPos(x - 2, y);
