@@ -579,6 +579,8 @@ int human_act(int raiseUnit)
 	g_raiseMake = raiseUnit;
 	g_menuIX = MENU_CC;		//	Check/Call
 	int chip = g_table.chip(g_manIX);
+	if( !chip )
+		return ACT_CC;;
 	for (;;) {
 		if( g_menuIX == MENU_CC )
 			g_raiseMake = g_table.call() - g_table.bet(pix);	//	コール必要額
