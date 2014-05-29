@@ -68,7 +68,7 @@ using namespace std;
 #define		HAND_HELP_X		(CONS_WD/2+8)
 #define		HAND_HELP_Y		1
 #define		VS_RAND_X			(CONS_WD/2+8+6)
-#define		VS_RAND_Y			1
+#define		VS_RAND_Y			0
 #define		KEY_SPECIAL	0xe0
 #define		KEY_LEFT		0x4b
 #define		KEY_RIGHT	0x4d
@@ -268,6 +268,10 @@ void clear_rightHalf()
 //	各ターンでの vs ランダム勝率を表示
 void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 {
+	setColor(COL_GRAY, COL_BLACK);
+	setCursorPos(x - 6, y);
+	cout << g_table.player(ix).m_name << ":";
+	++y;
 	const std::vector<Card> &cc = g_table.communityCards();
 	std::vector<Card> v;
 	double ws = calcWinSplitProb(c1, c2, v, N_PLAYER);
