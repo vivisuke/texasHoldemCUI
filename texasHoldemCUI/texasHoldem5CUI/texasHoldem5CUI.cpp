@@ -58,7 +58,7 @@ using namespace std;
 #define		MAN_BET_Y	(MAN_Y + 1)
 #define		POT_X			(TABLE_X + TABLE_WD + 1)
 #define		POT_Y			(TABLE_Y + 1)
-#define		MENU_X		2
+#define		MENU_X		1
 #define		MENU_Y		(MAN_Y+PLAYER_HT+1)
 #define		N_MENU		4		//	メニュー選択肢数
 #define		MENU_FOLD	0
@@ -67,7 +67,7 @@ using namespace std;
 #define		MENU_ALLIN	3
 #define		HAND_HELP_X		(CONS_WD/2+8)
 #define		HAND_HELP_Y		1
-#define		VS_RAND_X			(CONS_WD/2+8+4)
+#define		VS_RAND_X			(CONS_WD/2+8+6)
 #define		VS_RAND_Y			1
 #define		KEY_SPECIAL	0xe0
 #define		KEY_LEFT		0x4b
@@ -82,7 +82,7 @@ using namespace std;
 TexasHoldem g_table;
 int	g_comIX;
 int	g_manIX;
-//int	g_raiseMin;		//	最小レイズ額
+int	g_lastRaise;		//	直前レイズ額（コール額は含まない）
 int	g_raiseMake;		//	レイズメイク額（コール額＋独自のレイズ額）
 int	g_menuIX;			//	選択されているメニューIX
 const char *g_menu[] = {
@@ -525,7 +525,7 @@ void clear_menu(int dy = 0)
 {
 	setCursorPos(MENU_X, MENU_Y+dy);
 	setColor(COL_GRAY, COL_BLACK);
-	for (int i = 0; i < CONS_WD/2; ++i) {
+	for (int i = 0; i < CONS_WD/2+2; ++i) {
 		cout << " ";
 	}
 }
@@ -541,7 +541,7 @@ void draw_menu()
 		setColor(COL_GRAY, COL_BLACK);
 		cout << " ";
 	}
-	cout << My::to_string(g_raiseMake, 6);
+	cout << "mk" << My::to_string(g_raiseMake, 3);
 }
 void print_result(const uint odr[])
 {
@@ -571,6 +571,7 @@ void show_com_act(const char *act)
 int human_act(int raiseUnit)
 {
 	int pix = g_manIX;
+	int toCall = g_table.call() - g_table.bet(pix);		//	コール必要額
 	g_raiseMake = raiseUnit;
 	g_menuIX = MENU_CC;		//	Check/Call
 	int chip = g_table.chip(g_manIX);
@@ -591,7 +592,9 @@ int human_act(int raiseUnit)
 #if	1
 			if( (g_raiseMake -= raiseUnit) < 0 )
 				g_raiseMake = 0;
-			if( g_raiseMake >= raiseUnit )
+			if( g_raiseMake > toCall && g_raiseMake < toCall + g_lastRaise )
+				g_raiseMake = toCall;
+			if( g_raiseMake > toCall )
 				g_menuIX = MENU_RAISE;
 			else
 				g_menuIX = MENU_CC;
@@ -607,9 +610,14 @@ int human_act(int raiseUnit)
 #endif
 		} else if( ch == VK_UP && g_raiseMake < chip ) {
 #if	1
-			if( g_raiseMake == g_table.BB() / 2 )		//	SB の場合
-				g_raiseMake = g_table.BB() / 2;
-			if( (g_raiseMake += raiseUnit) > chip ) {
+			//if( g_raiseMake == g_table.BB() / 2 )		//	SB の場合
+			//	g_raiseMake = g_table.BB() / 2;
+			g_raiseMake = max(g_raiseMake, toCall);
+			if( g_raiseMake == toCall && g_lastRaise != 0 )
+				g_raiseMake += g_lastRaise;
+			else
+				g_raiseMake += raiseUnit;
+			if( g_raiseMake >= chip ) {
 				g_raiseMake = chip;
 				g_menuIX = MENU_ALLIN;
 			} else
@@ -658,7 +666,6 @@ int human_act(int raiseUnit)
 			act = ACT_RAISE;
 			break;
 	}
-	//done[pix] = true;
 	return act;
 }
 //	プリフロップ、フロップ、ターン、リバーの処理
@@ -666,6 +673,7 @@ int human_act(int raiseUnit)
 //	一人以外全員降りたら：return false;
 bool round()
 {
+	g_lastRaise = 0;
 	for (int ix = 0; ix < g_table.nPlayer(); ++ix) {
 		show_act(playerPos[ix].m_x, playerPos[ix].m_y, "");
 	}
@@ -745,6 +753,7 @@ bool round()
 			}
 		}
 		done[pix] = true;
+		int b = min(g_table.call() - g_table.bet(pix), g_table.chip(pix));		//	必要コール額
 		switch( act ) {
 			case ACT_FOLD:
 				g_table.fold(pix);
@@ -753,15 +762,14 @@ bool round()
 					return false;
 				}
 				break;
-			case ACT_CC: {
-				int b = min(g_table.call() - g_table.bet(pix), g_table.chip(pix));
+			case ACT_CC:
 				if( b != 0 ) {
 					g_table.addBet(pix, g_table.round(), b);
 				}
 				break;
-			}
 			case ACT_RAISE:
 				++raiseCnt;
+				g_lastRaise = g_raiseMake - b;
 				g_table.addBet(pix, g_table.round(), g_raiseMake);
 				break;
 		}
