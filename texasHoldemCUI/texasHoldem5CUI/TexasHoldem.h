@@ -87,6 +87,7 @@ public:
 	void	fold(int ix);					//	フォールド
 	int	action(int);					//	AI
 	void	addBet(int ix, int b);		//	ベット/コールを行う
+	void	addBet(int ix, int round, int b);		//	ベット/コールを行う
 	void	winner(int ix);			//	ix が買った場合の処理
 	void	split(const std::vector<int> &v);		//	引き分けだった場合の処理
 

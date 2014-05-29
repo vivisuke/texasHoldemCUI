@@ -727,13 +727,13 @@ bool round()
 			case ACT_CC: {
 				int b = min(g_table.call() - g_table.bet(pix), g_table.chip(pix));
 				if( b != 0 ) {
-					g_table.addBet(pix, b);
+					g_table.addBet(pix, g_table.round(), b);
 				}
 				break;
 			}
 			case ACT_RAISE:
 				++raiseCnt;
-				g_table.addBet(pix, g_raise);
+				g_table.addBet(pix, g_table.round(), g_raise);
 				break;
 		}
 		draw_player(pix, playerPos[pix].m_x, playerPos[pix].m_y, pix == g_manIX);

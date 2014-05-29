@@ -441,7 +441,16 @@ void TexasHoldem::printProb() const
 	double threshold = (double)call / (m_pot + call);
 	///std::cout << "threshold = " << threshold << "\n";
 }
-void TexasHoldem::addBet(int ix, int b)		//	ベット/コールを行う
+void TexasHoldem::addBet(int ix, int round, int b)
+{
+	m_player[ix].m_chip -= b;
+	if( (int)m_bets[ix].size() <= round )
+		 m_bets[ix].resize(round + 1);
+	m_bets[ix][round] += b;
+	m_pot += b;
+	m_call = max(m_call, bet(ix));
+}
+void TexasHoldem::addBet(int ix, int b)	
 {
 	m_player[ix].m_chip -= b;
 	m_bets[ix].push_back(b);
