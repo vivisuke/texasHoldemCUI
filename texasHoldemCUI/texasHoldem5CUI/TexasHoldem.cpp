@@ -156,6 +156,13 @@ void TexasHoldem::winner(int ix)			//	ix ‚ª”ƒ‚Á‚½ê‡‚Ìˆ—
 	m_pot = 0;
 	//m_bets.clear();
 }
+void TexasHoldem::winner(const std::vector<int> &sv)			//	sv ‚ªŸ‚Á‚½ê‡‚Ìˆ—
+{
+	if( sv.size() == 1 )
+		winner(sv[0]);
+	else
+		split(sv);
+}
 void TexasHoldem::split(const std::vector<int> &v)		//	ˆø‚«•ª‚¯‚¾‚Á‚½ê‡‚Ìˆ—
 {
 	backBets();
