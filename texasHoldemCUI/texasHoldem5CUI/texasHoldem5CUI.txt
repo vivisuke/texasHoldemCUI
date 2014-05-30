@@ -77,3 +77,4 @@
 ◎ calcHandStrength() 追加
 ◎ １ゲーム後の確率表示は calcHandStrength() を使用するよう修正
 ◎ AI を RateOfReturn を用いたものに変更してみる
+◎ バースト後の再参加はチップ100とする

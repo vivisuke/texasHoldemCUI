@@ -1022,7 +1022,7 @@ int main()
 		}
 		for (int i = 0; i < g_table.nPlayer(); ++i) {
 			if( !g_table.chip(i) )
-				g_table.setChip(i, 200);		//	ŽŸ‚ÌƒQ[ƒ€—p
+				g_table.setChip(i, 100);		//	ŽŸ‚ÌƒQ[ƒ€—p
 		}
 		cout << " continue ? [y/n]";
 		for (;;) {
