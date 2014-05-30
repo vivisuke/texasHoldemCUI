@@ -676,6 +676,10 @@ int com_act(int pix, int raiseUnit, int raiseCnt)
 	double th = calcThreshold(g_table.pot(), toCall);
 	if( !g_table.round() && th <= 0.5 )		//	プリフロップではあまりフォールドしない
 		th /= 2;
+	else if( g_table.round() == TexasHoldem::FLOP && th <= 0.5 )
+		th = th * 2 / 3;
+	else if( g_table.round() == TexasHoldem::TURN && th <= 0.5 )
+		th = th * 3 / 4;
 	//Sleep(500);
 	if( ws < th && toCall != 0 ) {
 		act = ACT_FOLD;
