@@ -908,7 +908,8 @@ int game()
 		clear_menu();
 		draw_table();
 		for (int i = 0; i < g_table.nPlayer(); ++i) {
-			draw_player(i, playerPos[i].m_x, playerPos[i].m_y, !g_table.folded(i));
+			draw_player(i, playerPos[i].m_x, playerPos[i].m_y, !g_table.folded(i), 2
+								, std::find(sv.begin(), sv.end(), i) == sv.end());
 		}
 		show_message("Push Enter Key");
 		getChar();
