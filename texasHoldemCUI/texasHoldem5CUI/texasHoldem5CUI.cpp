@@ -160,12 +160,12 @@ int getChar()
 		return ch;
 }
 
-void draw_card(int x, int y, Card c)
+void draw_card(int x, int y, Card c, bool gray = false)
 {
 	if( c.m_suit == Card::SPADES || c.m_suit == Card::CLUBS )
-		setColor(COL_BLACK, COL_WHITE);
+		setColor(COL_BLACK, gray ? COL_LIGHT_GRAY : COL_WHITE);
 	else
-		setColor(COL_RED, COL_WHITE);
+		setColor(gray ? COL_DARK_RED : COL_RED, gray ? COL_LIGHT_GRAY : COL_WHITE);
 	setCursorPos(x, y);
 	coutW(c.toStringW());
 }
@@ -372,7 +372,8 @@ void show_act(int x, int y, const char *act)
 }
 void draw_player(int ix, int x, int y,
 							bool open = false,		//	カードオープン
-							int nCard = 2)			//	カード表示枚数
+							int nCard = 2,			//	カード表示枚数
+							bool gray = false)		//	カード背景グレイ
 {
 	setCursorPos(x, y);
 	setColor(COL_BLACK, g_table.folded(ix) ? COL_LIGHT_GRAY : COL_YELLOW);
@@ -405,9 +406,9 @@ void draw_player(int ix, int x, int y,
 		Card c1, c2;
 		g_table.getHoleCards(ix, c1, c2);
 		if( nCard >= 1 )
-			draw_card(x, y+3, c1);
+			draw_card(x, y+3, c1, gray);
 		if( nCard >= 2 )
-			draw_card(x+3, y+3, c2);
+			draw_card(x+3, y+3, c2, gray);
 	} else {
 		setColor(COL_BLACK, COL_CYAN);
 		if( nCard >= 1 ) {
@@ -856,9 +857,12 @@ int game()
 		setColor(COL_GRAY, COL_BLACK);
 		bool folded = true;
 		int winIX;
+		std::vector<int>	sv;	//	勝者IX
 		if( g_table.nNotFoldPlayer(winIX) == 1 ) {
 			//	done: 一人以外全員が降りた場合
+			sv.push_back(winIX);
 		} else {
+			//	undone: split の場合の処理
 			vector<uint> odr(g_table.nPlayer());
 			vector<uint> hand(g_table.nPlayer());
 			std::vector<Card> v;
@@ -872,12 +876,20 @@ int game()
 					if( odr[i] > mx ) {
 						mx = odr[i];
 						winIX = i;
+						sv.clear();
+						sv.push_back(i);
+					} else if( odr[i] > mx ) {
+						sv.push_back(i);
 					}
 				}
 			}
 		}
 		draw_table();
-		g_table.winner(winIX);
+		for (int i = 0; i < g_table.nPlayer(); ++i) {
+			draw_player(i, playerPos[i].m_x, playerPos[i].m_y, !g_table.folded(i), 2
+								, std::find(sv.begin(), sv.end(), i) == sv.end());
+		}
+		g_table.winner(winIX);	//	pot を勝者に分配
 		setCursorPos(MENU_X, MENU_Y);
 		setColor(COL_GRAY, COL_BLACK);
 		if( winIX == g_manIX ) {
@@ -891,7 +903,7 @@ int game()
 			draw_winSplit_vsRand();
 		clear_menu();
 		draw_table();
-		for (int i = 0; i < N_PLAYER; ++i) {
+		for (int i = 0; i < g_table.nPlayer(); ++i) {
 			draw_player(i, playerPos[i].m_x, playerPos[i].m_y, !g_table.folded(i));
 		}
 		show_message("Push Enter Key");
