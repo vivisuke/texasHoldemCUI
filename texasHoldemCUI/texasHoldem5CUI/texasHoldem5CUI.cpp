@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <algorithm>    // std::find
+#include <random>
 #include <assert.h>
 
 using namespace std;
@@ -79,6 +80,7 @@ using namespace std;
 #define		ACT_RAISE	3
 
 
+std::mt19937	g_mt;
 TexasHoldem g_table;
 int	g_comIX;
 int	g_manIX;
@@ -674,12 +676,57 @@ int com_act(int pix, int raiseUnit, int raiseCnt)
 	Card c1, c2;
 	g_table.getHoleCards(pix, c1, c2);
 #if	1
-	double hs = calcHandStrength(c1, c2, g_table.communityCards(), N_PLAYER);
+	double hs = calcHandStrength(c1, c2, g_table.communityCards(), N_PLAYER-1);
 	int toCall = g_table.call() - g_table.bet(pix);	//	コール必要額
 	int pot = g_table.pot();
 	double potOdds = (double)toCall / (pot + toCall);
-	double rateOfReturn = hs / potOdds;
-	act = ACT_CC;
+	double rr = hs / potOdds;		//	rate of return
+	std::uniform_real_distribution<> rand(0.0, 1.0); 
+	double r = rand(g_mt);
+	if( rr < 0.8 ) {
+		if( r <= 0.95 )
+			act = ACT_FOLD;
+		else
+			act = ACT_RAISE;		//	5% ブラフ
+	} else if( rr < 1.0 ) {
+		if( r <= 0.8 )
+			act = ACT_FOLD;
+		if( r <= 0.85 )
+			act = ACT_CC;
+		else
+			act = ACT_RAISE;		//	15% ブラフ
+	} else if( rr < 1.3 ) {
+		if( r <= 0.6 )
+			act = ACT_CC;
+		else		//	40%
+			act = ACT_RAISE;
+	} else {		//	r >= 1.3
+		if( r <= 0.3 )
+			act = ACT_CC;
+		else		//	70%
+			act = ACT_RAISE;
+	}
+	if( act == ACT_FOLD && toCall == 0 )
+		act = ACT_CC;		//	check
+	switch( act ) {
+		case ACT_FOLD:
+			show_act(px, py, "fold");
+			break;
+		case ACT_CC:
+			if( !toCall )
+				show_act(px, py, "check");
+			else
+				show_act(px, py, "call");
+			break;
+		case ACT_RAISE: {
+			g_raiseMake = min(raiseUnit, g_table.chip(pix) - toCall);
+			g_raiseMake += toCall;
+			std::string str("make ");
+			str += My::to_string(g_raiseMake);
+			show_act(px, py, str.c_str());
+			break;
+		}
+	}
 #else
 	double ws = calcWinSplitProb(c1, c2, g_table.communityCards(), N_PLAYER);
 	//show_message("WinSplit = ", 1);
@@ -941,6 +988,8 @@ int game()
 }
 int main()
 {
+	std::random_device rd;
+	g_mt.seed(rd());		//	乱数シード指定
 #if	0
 	std::vector<Card> cm;
 	cm.push_back(Card(Card::DIAMONDS, Card::RANK_K));
