@@ -855,7 +855,6 @@ int game()
 		setCursorPos(MENU_X, MENU_Y);
 		setColor(COL_GRAY, COL_BLACK);
 		bool folded = true;
-#if	1
 		int winIX;
 		if( g_table.nNotFoldPlayer(winIX) == 1 ) {
 			//	done: ˆêlˆÈŠO‘Sˆõ‚ª~‚è‚½ê‡
@@ -886,61 +885,26 @@ int game()
 		} else {
 			cout << "--- " << g_table.player(winIX).m_name << " win --- (Push Enter Key)";
 		}
-#else
-		if( g_table.folded(g_comIX) ) {
-			cout << "+++ You Win +++ (Push Enter Key)";
-			g_table.winner(g_manIX);
-		} else if( g_table.folded(g_manIX) ) {
-			cout << "--- Com Win --- (Push Enter Key)";
-			g_table.winner(g_comIX);
-		} else {
-			folded = false;
-			draw_player(g_comIX, COM_X, COM_Y, /*open:*/true);
-			//draw_com(/*open:*/true);
-			uint odr[2];		//	undone: ‚RlˆÈã‘Î‰
-			uint hand[2];
-			std::vector<Card> v;
-			for (int i = 0; i < g_table.nPlayer(); ++i) {
-				g_table.playersCard(i, v);
-				hand[i] = checkHand(v, odr[i]);
-			}
-#if	1
-			show_act(COM_X, COM_Y, shortHandName[hand[g_comIX]]);
-			show_act(MAN_X, MAN_Y, shortHandName[hand[g_manIX]]);
-#else
-			setColor(COL_GRAY, COL_BLACK);
-			setCursorPos(COM_X, COM_Y + 3);
-			cout << handName[hand[g_comIX]] << "        ";
-			setCursorPos(MAN_X, MAN_Y + 3);
-			cout << handName[hand[g_manIX]] << "        ";
-#endif
-			print_result(odr);
-		}
-#endif
 		//draw_com(/*open:*/!folded);		//	‚Ç‚¿‚ç‚©‚ª~‚è‚½ê‡‚ÍèD‚ğ‚³‚ç‚³‚È‚¢
 		int ch = getChar();
 		if( ch == 'p' )
 			draw_winSplit_vsRand();
 		clear_menu();
-#if	1
+		draw_table();
 		for (int i = 0; i < N_PLAYER; ++i) {
 			draw_player(i, playerPos[i].m_x, playerPos[i].m_y, !g_table.folded(i));
 		}
-#else
-		draw_player(g_comIX, COM_X, COM_Y, /*open:*/!folded);
-		//draw_com(/*open:*/!folded);		//	‚Ç‚¿‚ç‚©‚ª~‚è‚½ê‡‚ÍèD‚ğ‚³‚ç‚³‚È‚¢
-		draw_human();
-#endif
-		draw_table();
 		show_message("Push Enter Key");
 		getChar();
-		//clear_winSplit();
 		//	–ğ–¼•\¦•”•ª‚ğÁ‹
+#if	1
+#else
 		setColor(COL_GRAY, COL_BLACK);
 		setCursorPos(COM_X, COM_Y + 3);
 		cout << "               ";
 		setCursorPos(MAN_X, MAN_Y + 3);
 		cout << "               ";
+#endif
 		clear_menu();
 		g_table.forwardDealer();
 	}
