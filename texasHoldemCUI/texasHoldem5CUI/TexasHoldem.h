@@ -64,6 +64,7 @@ public:
 	int	bet(int ix) const;
 	int	bet(int ix, int round) const;
 	int	pot() const { return m_pot; }
+	int	foldedRound(int ix) const { return m_foldedRound[ix]; }
 	bool	isFolded(int ix) const { return m_folded[ix]; }
 	bool	allCalled() const;
 	bool	isAllIn() const;		//	一人以外全員がオールインか？
@@ -106,6 +107,7 @@ private:
 	bool	m_showDowned;
 	std::vector<Player>	m_player;		//	各プレイヤー
 	std::vector<bool>		m_folded;		//	FOLD済み
+	std::vector<int>			m_foldedRound;		//	FOLDしたラウンド（0:プリフロップ、1:フロップ、2:ターン, 3:リバー）
 	std::vector<HoleCards>	m_holeCards;		//	各プレイヤーのホールカード
 	std::vector<Card>		m_communityCards;	//	コミュニティカード
 	std::vector<std::vector<int>>	m_bets;			//	各プレイヤーのラウンドごとのベット額

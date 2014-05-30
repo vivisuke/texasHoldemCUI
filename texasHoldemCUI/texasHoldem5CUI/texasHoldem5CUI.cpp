@@ -272,6 +272,7 @@ void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 	setCursorPos(x - 6, y);
 	cout << g_table.player(ix).m_name << ":";
 	++y;
+	int fr = g_table.foldedRound(ix);
 	const std::vector<Card> &cc = g_table.communityCards();
 	std::vector<Card> v;
 	double ws = calcWinSplitProb(c1, c2, v, N_PLAYER);
@@ -282,7 +283,10 @@ void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 	draw_card(x+3, y, c2);
 	setCursorPos(x + 7*3, y);
 	setColor(COL_GRAY, COL_BLACK);
-	cout << g_table.bet(ix, 0) << "   ";
+	if( fr <= TexasHoldem::PRE_FLOP )
+		cout << "F";
+	else
+		cout << g_table.bet(ix, 0) << "   ";
 	if( cc.size() < 3 ) return;
 	++y;
 	v.push_back(cc[0]);
@@ -298,7 +302,10 @@ void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 	}
 	setCursorPos(x + 7*3, y);
 	setColor(COL_GRAY, COL_BLACK);
-	cout << g_table.bet(ix, 1) << "   ";
+	if( fr <= TexasHoldem::FLOP )
+		cout << "F";
+	else
+		cout << g_table.bet(ix, 1) << "   ";
 	if( cc.size() < 4 ) return;
 	++y;
 	v.push_back(cc[3]);
@@ -313,7 +320,10 @@ void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 	}
 	setCursorPos(x + 7*3, y);
 	setColor(COL_GRAY, COL_BLACK);
-	cout << g_table.bet(ix, 2) << "   ";
+	if( fr <= TexasHoldem::TURN )
+		cout << "F";
+	else
+		cout << g_table.bet(ix, 2) << "   ";
 	if( cc.size() < 5 ) return;
 	++y;
 	v.push_back(cc[4]);
@@ -328,7 +338,10 @@ void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 	}
 	setCursorPos(x + 7*3, y);
 	setColor(COL_GRAY, COL_BLACK);
-	cout << g_table.bet(ix, 3) << "   ";
+	if( fr <= TexasHoldem::RIVER )
+		cout << "F";
+	else
+		cout << g_table.bet(ix, 3) << "   ";
 }
 void draw_winSplit_vsRand()
 {

@@ -37,6 +37,8 @@ void TexasHoldem::initForGame()
 	m_bets.resize(m_nPlayer);
 	m_folded.clear();
 	m_folded.resize(m_nPlayer, false);
+	m_foldedRound.clear();
+	m_foldedRound.resize(m_nPlayer, RIVER+1);
 	m_deck.init(/*shuffle*/true);
 }
 //	ディーラをランダムに決める
@@ -107,6 +109,7 @@ void TexasHoldem::playersCard(int ix, std::vector<Card> &v)
 void TexasHoldem::fold(int ix)
 {
 	m_folded[ix] = true;
+	m_foldedRound[ix] = m_round;
 }
 //	フォールドしていないプレイヤー人数を返す
 int TexasHoldem::nNotFoldPlayer() const
