@@ -48,6 +48,7 @@ int checkHand(const std::vector<Card> &v)
 	} else
 		s = -1;
 	int threeOfAKindIX = -1;
+	int threeOfAKindIX2 = -1;
 	int pairIX1 = -1;
 	int pairIX2 = -1;
 	for (int i = 0; i < 13; ++i) {
@@ -55,7 +56,10 @@ int checkHand(const std::vector<Card> &v)
 			case 4:
 				return FOUR_OF_A_KIND;
 			case 3:
-				threeOfAKindIX = i;
+				if( threeOfAKindIX < 0 )
+					threeOfAKindIX = i;
+				else
+					threeOfAKindIX2 = i;
 				break;
 			case 2:
 				pairIX2 = pairIX1;
@@ -63,7 +67,8 @@ int checkHand(const std::vector<Card> &v)
 				break;
 		}
 	}
-	if( threeOfAKindIX >= 0 && pairIX1 >= 0 )
+	//	3カード*2 もフルハウス
+	if( threeOfAKindIX >= 0 && (pairIX1 >= 0 || threeOfAKindIX2 >= 0) )
 		return FULL_HOUSE;
 	if( s >= 0 )
 		return FLUSH;
@@ -130,16 +135,20 @@ int checkHand(const std::vector<Card> v, uint &odr)
 	} else
 		s = -1;
 	int threeOfAKindIX = -1;
+	int threeOfAKindIX2 = -1;
 	int pairIX1 = -1;
 	int pairIX2 = -1;
 	for (int i = 0; i < 13; ++i) {
 		switch( rcnt[i] ) {
 			case 4:
 				//	同じ数の４カードは無いので、４カードのランクのみで優劣が決まる
-				odr |= (i << 4) + (FOUR_OF_A_KIND << 20);
+				odr |= i + (FOUR_OF_A_KIND << 20);
 				return FOUR_OF_A_KIND;
 			case 3:
-				threeOfAKindIX = i;
+				if( threeOfAKindIX < 0 )
+					threeOfAKindIX = i;
+				else
+					threeOfAKindIX2 = i;
 				break;
 			case 2:
 				pairIX2 = pairIX1;
@@ -150,6 +159,11 @@ int checkHand(const std::vector<Card> v, uint &odr)
 	if( threeOfAKindIX >= 0 && pairIX1 >= 0 ) {
 		//	フルハウスの場合は、３カードのランクが優先、ついでペアのランク
 		odr = threeOfAKindIX * 16 + pairIX1 + (FULL_HOUSE << 20);
+		return FULL_HOUSE;
+	}
+	//	3カード*2 もフルハウス
+	if( threeOfAKindIX >= 0 && threeOfAKindIX2 >= 0 ) {
+		odr = (threeOfAKindIX2 <<4) + threeOfAKindIX + (FULL_HOUSE << 20);
 		return FULL_HOUSE;
 	}
 	if( s >= 0 ) {
@@ -230,6 +244,15 @@ int checkHand(const std::vector<Card> v, uint &odr)
 	odr |= (HIGH_CARD << 20);
 	return HIGH_CARD;
 }
+void print(const std::vector<Card> v)
+{
+	for (uint i = 0; i < v.size(); ++i) {
+		//std::cout << v[i].toString() << " ";
+		v[i].printW();
+		//std::cout << " ";
+	}
+	std::cout << "\n";
+}
 void print(const std::vector<Card> v, uint odr)
 {
 	for (uint i = 0; i < v.size(); ++i) {
@@ -247,6 +270,293 @@ void print(const std::vector<Card> v, uint odr, const char *ptr)
 		//std::cout << " ";
 	}
 	std::cout << std::hex << odr << std::dec << " " << ptr << "\n";
+}
+//----------------------------------------------------------------------
+//	13bit までのビットカウント
+int bitCount(int v)
+{
+	int cnt = 0;
+	int mask = 1 << 12;
+	while( mask != 0 ) {
+		if( (v & mask) != 0 ) ++cnt;
+		mask >>= 1;
+	}
+	return cnt;
+}
+//	ストレートの場合は、一番大きなランクを返す
+int isStraight(int v)
+{
+	if( (v & (0x1f<<8)) == (0x1f<<8) )	//	AKQJT
+		return Card::RANK_A;
+	if( (v & (0x1f<<7)) == (0x1f<<7) )	//	KQJT9
+		return Card::RANK_K;
+	if( (v & (0x1f<<6)) == (0x1f<<6) )	//	QJT98
+		return Card::RANK_Q;
+	if( (v & (0x1f<<5)) == (0x1f<<5) )	//	JT987
+		return Card::RANK_J;
+	if( (v & (0x1f<<4)) == (0x1f<<4) )	//	T9876
+		return Card::RANK_10;
+	if( (v & (0x1f<<3)) == (0x1f<<3) )	//	98765
+		return Card::RANK_9;
+	if( (v & (0x1f<<2)) == (0x1f<<2) )	//	87654
+		return Card::RANK_8;
+	if( (v & (0x1f<<1)) == (0x1f<<1) )	//	76543
+		return Card::RANK_7;
+	if( (v & (0x1f)) == (0x1f) )	//	65432
+		return Card::RANK_6;
+	if( (v & 0x100f) == 0x100f )	//	5432A
+		return Card::RANK_5;
+	else
+		return 0;
+}
+//	ビットマップを用いた役判定関数
+//	v のサイズは７以下とする
+int checkHandBM(const std::vector<Card> &v)
+{
+	//	各スートごとのビットマップ
+	int spades = 0;
+	int clubs = 0;
+	int herts = 0;
+	int diamonds = 0;
+	for (int i = 0; i < (int)v.size(); ++i) {
+		const Card c = v[i];
+		const int mask = 1 << c.m_rank;
+		switch( c.m_suit ) {
+			case Card::SPADES:	spades |= mask;	break;
+			case Card::CLUBS:	clubs |= mask;	break;
+			case Card::HERTS:	herts |= mask;	break;
+			case Card::DIAMONDS:	diamonds |= mask;	break;
+		}
+	}
+	if( isStraight(spades) ||
+		isStraight(clubs) ||
+		isStraight(herts) ||
+		isStraight(diamonds) )
+	{
+		return STRAIGHT_FLUSH;
+	}
+	//	各ランク毎のビットの数を数える
+	const int MASK = (1 << 13) - 1;		//	13bit のマスク
+	int r0 = ~(spades |clubs | herts | diamonds) & MASK;
+	int r1 = (spades & ~clubs & ~herts & ~diamonds) | (~spades & clubs & ~herts & ~diamonds) |
+				(~spades & ~clubs & herts & ~diamonds) | (~spades & ~clubs & ~herts & diamonds);
+	int r3 = (~spades & clubs & herts & diamonds) | (spades & ~clubs & herts & diamonds) |
+				(spades & clubs & ~herts & diamonds) | (spades & clubs & herts & ~diamonds);
+	int r4 = spades & clubs & herts & diamonds;
+	int r2 = ~(r0 | r1 | r3 | r4) & MASK;
+	if( r4 != 0 )		//	４枚のランクがあれば ４カード
+		return FOUR_OF_A_KIND;
+	//	各スートのビットカウントが５以上であればフラッシュ
+	int sbc = bitCount(spades);
+	if( sbc >= 5 ) return FLUSH;
+	int cbc = bitCount(clubs);
+	if( cbc >= 5 ) return FLUSH;
+	int hbc = bitCount(herts);
+	if( hbc >= 5 ) return FLUSH;
+	int dbc = bitCount(diamonds);
+	if( dbc >= 5 ) return FLUSH;
+	if( isStraight(spades | clubs | herts | diamonds) )		//	ストレートチェック
+		return STRAIGHT;
+	if( r3 != 0 && r2 != 0 )		//	フルハウス
+		return FULL_HOUSE;
+	if( r3 != 0 )		//	３カード
+		if( bitCount(r3) == 2 )
+			return FULL_HOUSE;
+		else
+			return THREE_OF_A_KIND;
+	if( r2 != 0 ) {
+		if( bitCount(r2) > 1 )		//	ペアが２つ以上ある
+			return TWO_PAIR;
+		else
+			return ONE_PAIR;
+	}
+	return HIGH_CARD;
+}
+//	一番左ビットのみを返す
+//	x は13ビット
+int MLB(int x)
+{
+	if( !x ) return 0;
+	if( (x & 0x1f00) != 0 ) {
+		if( (x & 0x100) != 0 )
+			return 0x100;
+		else {
+			if( (x & 0xc00) != 0 ) {
+				if( (x & 0x800) != 0 )
+					return 0x800;
+				else
+					return 0x400;
+			} else {
+				if( (x & 0x200) != 0 )
+					return 0x200;
+				else
+					return 0x100;
+			}
+		}
+	} else {
+		if( (x & 0xf0) != 0 ) {
+			if( (x & 0xc0) != 0 ) {
+				if( (x & 0x80) != 0 )
+					return 0x80;
+				else
+					return 0x40;
+			} else {
+				if( (x & 0x20) != 0 )
+					return 0x20;
+				else
+					return 0x10;
+			}
+		} else {
+			if( (x & 0x0c) != 0 ) {
+				if( (x & 0x08) != 0 )
+					return 0x08;
+				else
+					return 0x04;
+			} else {
+				if( (x & 0x02) != 0 )
+					return 0x02;
+				else
+					return 0x01;
+			}
+		}
+	}
+}
+//	一番左のビットのビット番号を返す
+const char mlbnTbl[] = {0,1,2,15,29,3,23,16,30,27,4,6,12,24,8,17,31,14,28,22,26,5,11,7,13,21,25,10,20,9,19,18};
+uint mlbnM(uint x)
+{
+   //if (x == 0) { return 33; }	//	0 でコールされることもない
+   x = x | (x >> 1);
+   x = x | (x >> 2);
+   x = x | (x >> 4);
+   x = x | (x >> 8);
+   //x = x | (x >>16);		//	RANK は16ビットで充分なので、この行は必要ない
+   //return ("\0\1\2\xf\x1d\3\x17\x10\x1e\x1b\4\6\xc\x18\x8\x11"
+   //             "\x1f\xe\x1c\x16\x1a\5\xb\7\xd\x15\x19\xa\x14\x9\x13\x12")
+   //            [0x5763e69U * (x - (x >> 1)) >> 27];
+   return mlbnTbl[0x5763e69U * (x - (x >> 1)) >> 27];
+}
+//	上位から５枚を順に並べる
+uint topN(uint bits, int cnt)
+{
+	uint o = 0;;
+	//int cnt = 5;
+	uint mask = 0x1000;
+	uint rk = Card::RANK_A;
+	while( --cnt >= 0 ) {
+		while( (bits & mask) == 0 ) {
+			mask >>= 1;
+			--rk;
+			assert( mask != 0 );
+		}
+		o = (o << 4) + rk;
+		mask >>= 1;
+		--rk;
+	}
+	return o;
+}
+//	ビットマップを用いた役判定関数
+//	v のサイズは７以下とする
+//	odr:	[役][c1][c2][c3][c4][c5]		（各４ビット）
+int checkHandBM(const std::vector<Card> &v, uint &odr)
+{
+	//	各スートごとのビットマップ
+	int spades = 0;
+	int clubs = 0;
+	int herts = 0;
+	int diamonds = 0;
+	for (int i = 0; i < (int)v.size(); ++i) {
+		const Card c = v[i];
+		const int mask = 1 << c.m_rank;
+		switch( c.m_suit ) {
+			case Card::SPADES:	spades |= mask;	break;
+			case Card::CLUBS:	clubs |= mask;	break;
+			case Card::HERTS:	herts |= mask;	break;
+			case Card::DIAMONDS:	diamonds |= mask;	break;
+		}
+	}
+	int rk;
+	if( (rk = isStraight(spades)) != 0 ||
+		(rk = isStraight(clubs)) != 0 ||
+		(rk = isStraight(herts)) != 0 ||
+		(rk = isStraight(diamonds)) != 0 )
+	{
+		//	ストレート・フラッシュの場合は、一番大きいカードランクのみで優劣が決まる
+		odr = (STRAIGHT_FLUSH << 20) | rk;
+		return STRAIGHT_FLUSH;
+	}
+	//	各ランク毎のビットの数を数える
+	const int MASK = (1 << 13) - 1;		//	13bit のマスク
+	int r0 = ~(spades |clubs | herts | diamonds) & MASK;
+	int r1 = (spades & ~clubs & ~herts & ~diamonds) | (~spades & clubs & ~herts & ~diamonds) |
+				(~spades & ~clubs & herts & ~diamonds) | (~spades & ~clubs & ~herts & diamonds);
+	int r3 = (~spades & clubs & herts & diamonds) | (spades & ~clubs & herts & diamonds) |
+				(spades & clubs & ~herts & diamonds) | (spades & clubs & herts & ~diamonds);
+	int r4 = spades & clubs & herts & diamonds;
+	int r2 = ~(r0 | r1 | r3 | r4) & MASK;
+	if( r4 != 0 ) {	//	４枚のランクがあれば ４カード
+		//	４カードが同じ数でぶつかることは無い
+		odr = (FOUR_OF_A_KIND << 20) + topN(r4, 1);
+		return FOUR_OF_A_KIND;
+	}
+	//	各スートのビットカウントが５以上であればフラッシュ
+	int sbc = bitCount(spades);
+	if( sbc >= 5 ) {
+		odr = (FLUSH << 20) + topN(spades, 5);
+		return FLUSH;
+	}
+	int cbc = bitCount(clubs);
+	if( cbc >= 5 ) {
+		odr = (FLUSH << 20) + topN(clubs, 5);
+		return FLUSH;
+	}
+	int hbc = bitCount(herts);
+	if( hbc >= 5 ) {
+		odr = (FLUSH << 20) + topN(herts, 5);
+		return FLUSH;
+	}
+	int dbc = bitCount(diamonds);
+	if( dbc >= 5 ) {
+		odr = (FLUSH << 20) + topN(diamonds, 5);
+		return FLUSH;
+	}
+	if( rk = isStraight(spades | clubs | herts | diamonds) ) {		//	ストレートチェック
+		odr = (STRAIGHT << 20) + rk;
+		return STRAIGHT;
+	}
+	if( r3 != 0 && r2 != 0 ) {		//	フルハウス
+		odr = (FULL_HOUSE << 20) + (topN(r3, 1) << 4) + topN(r2, 1);
+		return FULL_HOUSE;
+	}
+	if( r3 != 0 ) {		//	３カード
+		switch( bitCount(r3) ) {
+			case 2:
+				odr = (FULL_HOUSE << 20) + topN(r3, 2);
+				return FULL_HOUSE;
+			case 1:
+				odr = (THREE_OF_A_KIND << 20) + (topN(r3, 1) << 8) + topN(r1, 2);
+				return THREE_OF_A_KIND;
+		}
+	}
+	if( r2 != 0 ) {
+		switch( bitCount(r2) ) {
+			case 3: {
+				odr = (TWO_PAIR << 20) + topN(r2, 3);
+				uint t = topN(r1, 1);
+				if( t > (odr & 0x0f) )
+					odr = (odr & ~0x0f) + t;
+				return TWO_PAIR;
+			}
+			case 2:
+				odr = (TWO_PAIR << 20) + (topN(r2, 2) << 4) + topN(r1, 1);
+				return TWO_PAIR;
+			case 1:
+				odr = (ONE_PAIR << 20) + (topN(r2, 1) << 12) + topN(r1, 3);
+				return ONE_PAIR;
+		}
+	}
+	odr = (HIGH_CARD << 20) + topN(r1, 5);
+	return HIGH_CARD;
 }
 //----------------------------------------------------------------------
 //	ランダムハンドの相手一人に対する勝率（勝ち or 引き分け）を求める

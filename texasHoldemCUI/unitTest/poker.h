@@ -23,3 +23,4 @@ double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu);
 double calcWinSplitProb(Card c1, Card c2, const std::vector<Card> &comu, int np);
 double calcHandStrength(Card c1, Card c2, const std::vector<Card> &comu, int np);
 double calcThreshold(int pot, int call);
+void print(const std::vector<Card> v);
