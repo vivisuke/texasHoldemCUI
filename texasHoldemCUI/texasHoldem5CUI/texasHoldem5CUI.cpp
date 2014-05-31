@@ -1,7 +1,7 @@
-#include "consoleUtil.h"
-#include "Deck.h"
-#include "TexasHoldem.h"
-#include "poker.h"
+#include "../lib/consoleUtil.h"
+#include "../lib/Deck.h"
+#include "../lib/TexasHoldem.h"
+#include "../lib/poker.h"
 #include <windows.h>
 #include <conio.h>
 #include <algorithm>    // std::find

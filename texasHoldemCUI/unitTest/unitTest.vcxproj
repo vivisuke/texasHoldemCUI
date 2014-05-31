@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{641E3C95-01A5-4316-8211-4261C77C9CB1}</ProjectGuid>
+    <ProjectGuid>{5D018B52-8B57-4409-8D27-27BECB973DF0}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>texasHoldem5CUI</RootNamespace>
+    <RootNamespace>unitTest</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -77,20 +77,18 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\lib\consoleUtil.h" />
-    <ClInclude Include="..\lib\Deck.h" />
-    <ClInclude Include="..\lib\poker.h" />
-    <ClInclude Include="..\lib\TexasHoldem.h" />
+    <ClInclude Include="consoleUtil.h" />
+    <ClInclude Include="Deck.h" />
+    <ClInclude Include="poker.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\lib\consoleUtil.cpp" />
-    <ClCompile Include="..\lib\Deck.cpp" />
-    <ClCompile Include="..\lib\poker.cpp" />
-    <ClCompile Include="..\lib\TexasHoldem.cpp" />
+    <ClCompile Include="consoleUtil.cpp" />
+    <ClCompile Include="Deck.cpp" />
+    <ClCompile Include="poker.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="texasHoldem5CUI.cpp" />
+    <ClCompile Include="unitTest.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

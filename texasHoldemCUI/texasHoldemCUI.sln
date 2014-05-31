@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "texasHoldemCUI", "texasHold
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "texasHoldem5CUI", "texasHoldem5CUI\texasHoldem5CUI.vcxproj", "{641E3C95-01A5-4316-8211-4261C77C9CB1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "unitTest", "unitTest\unitTest.vcxproj", "{5D018B52-8B57-4409-8D27-27BECB973DF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{641E3C95-01A5-4316-8211-4261C77C9CB1}.Debug|Win32.Build.0 = Debug|Win32
 		{641E3C95-01A5-4316-8211-4261C77C9CB1}.Release|Win32.ActiveCfg = Release|Win32
 		{641E3C95-01A5-4316-8211-4261C77C9CB1}.Release|Win32.Build.0 = Release|Win32
+		{5D018B52-8B57-4409-8D27-27BECB973DF0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5D018B52-8B57-4409-8D27-27BECB973DF0}.Debug|Win32.Build.0 = Debug|Win32
+		{5D018B52-8B57-4409-8D27-27BECB973DF0}.Release|Win32.ActiveCfg = Release|Win32
+		{5D018B52-8B57-4409-8D27-27BECB973DF0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

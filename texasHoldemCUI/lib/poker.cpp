@@ -78,8 +78,10 @@ int checkHand(const std::vector<Card> &v)
 		if( (bitmap & mask) == mask )
 			return STRAIGHT;
 	}
-	if( bitmap == 0x100f )	//	1 0000 00000 1111 = A5432
+	if( (bitmap & 0x100f) == 0x100f )		//	5432A
 		return STRAIGHT;
+	//if( bitmap == 0x100f )	//	1 0000 00000 1111 = A5432
+	//	return STRAIGHT;
 	if( threeOfAKindIX >= 0 )
 		return THREE_OF_A_KIND;
 	if( pairIX2 >= 0 )
@@ -183,7 +185,7 @@ int checkHand(const std::vector<Card> v, uint &odr)
 			return STRAIGHT;
 		}
 	}
-	if( bitmap == 0x100f ) {	//	1 0000 00000 1111 = A5432
+	if( (bitmap & 0x100f) == 0x100f ) {	//	1 0000 00000 1111 = A5432
 		odr = (5-2) + (STRAIGHT << 20);
 		return STRAIGHT;
 	}

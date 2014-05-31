@@ -24,16 +24,13 @@
     <ClInclude Include="targetver.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\consoleUtil.h">
+    <ClInclude Include="consoleUtil.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\Deck.h">
+    <ClInclude Include="Deck.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="..\lib\poker.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\TexasHoldem.h">
+    <ClInclude Include="poker.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,19 +38,16 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="texasHoldem5CUI.cpp">
+    <ClCompile Include="unitTest.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\consoleUtil.cpp">
+    <ClCompile Include="consoleUtil.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\Deck.cpp">
+    <ClCompile Include="Deck.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\poker.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\TexasHoldem.cpp">
+    <ClCompile Include="poker.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
