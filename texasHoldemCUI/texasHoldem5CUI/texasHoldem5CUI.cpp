@@ -765,7 +765,9 @@ bool round()
 	int raiseCnt = 0;		//	ƒŒƒCƒY‰ñ”
 	for (;;) {
 		for (int ix = 0; ix < g_table.nPlayer(); ++ix) {
-			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/ix == g_manIX);
+			draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y,
+												/*open:*/ix == g_manIX, 2,
+												/*grayout:*/g_table.isFolded(ix));
 			//draw_player(ix, playerPos[ix].m_x, playerPos[ix].m_y, /*open:*/true);		//	for Debug
 		}
 		draw_table();
