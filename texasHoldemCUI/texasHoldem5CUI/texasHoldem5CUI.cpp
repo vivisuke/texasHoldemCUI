@@ -676,6 +676,8 @@ int com_act(int pix, int raiseUnit, int raiseCnt)
 		else		//	70%
 			act = ACT_RAISE;
 	}
+	if( act == ACT_RAISE && g_table.chip(pix) < g_table.BB() * 4 && hs < 0.5 )
+		act = ACT_CC;
 	if( act == ACT_FOLD && toCall == 0 )
 		act = ACT_CC;		//	check
 	switch( act ) {
