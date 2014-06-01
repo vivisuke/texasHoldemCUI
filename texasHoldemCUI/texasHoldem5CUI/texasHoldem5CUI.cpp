@@ -1029,7 +1029,7 @@ int main()
 			int ch = getChar();
 			if( ch == 'n' || ch == 'N' )
 				return 0;
-			if( ch == 'y' || ch == 'Y' )
+			if( ch == 'y' || ch == 'Y' || ch == '\r' || ch == '\n' )
 				break;
 		}
 		clear_menu();
