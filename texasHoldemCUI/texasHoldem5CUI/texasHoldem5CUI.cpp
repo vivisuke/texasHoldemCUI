@@ -259,7 +259,7 @@ void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 	if( fr <= TexasHoldem::PRE_FLOP )
 		cout << "F";
 	else
-		cout << g_table.bet(ix, 0) << "   ";
+		cout << g_table.bet(ix, 0);
 	if( cc.size() < 3 ) return;
 	++y;
 	v.push_back(cc[0]);
@@ -279,7 +279,7 @@ void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 	if( fr <= TexasHoldem::FLOP )
 		cout << "F";
 	else
-		cout << g_table.bet(ix, 1) << "   ";
+		cout << g_table.bet(ix, 1);
 	if( cc.size() < 4 ) return;
 	++y;
 	v.push_back(cc[3]);
@@ -298,7 +298,7 @@ void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 	if( fr <= TexasHoldem::TURN )
 		cout << "F";
 	else
-		cout << g_table.bet(ix, 2) << "   ";
+		cout << g_table.bet(ix, 2);
 	if( cc.size() < 5 ) return;
 	++y;
 	v.push_back(cc[4]);
@@ -317,7 +317,7 @@ void draw_winSplit_vsRand(int ix, int x, int y, Card c1, Card c2)
 	if( fr <= TexasHoldem::RIVER )
 		cout << "F";
 	else
-		cout << g_table.bet(ix, 3) << "   ";
+		cout << My::to_string(g_table.bet(ix, 3));
 }
 void draw_winSplit_vsRand()
 {
